@@ -2,20 +2,21 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+from decimal import Decimal
 
 class OfferBase(BaseModel):
     title: str
-    price: float
+    last_price: Decimal
     currency: str
     url: str
     source: str
-    brand: Optional[str] = None
+    source_offer_id: str
+    seller: Optional[str] = None
     image_url: Optional[str] = None
     rating: Optional[float] = None
-    shipping_cost: Optional[float] = None
 
 class OfferCreate(OfferBase):
-    search_id: int
+    pass
 
 class OfferResponse(OfferBase):
     id: int

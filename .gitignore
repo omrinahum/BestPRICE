@@ -1,0 +1,56 @@
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+env/
+
+# Environment files
+*.env
+.env
+
+# SQLite database
+*.db
+bestprice.db
+
+# VSCode settings and history
+.vscode/
+.history/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test/coverage artifacts
+.coverage
+.pytest_cache/
+.cache/
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+
+# Alembic migration files (if you use alembic)
+alembic.ini
+migrations/
+
+# Logs
+*.log
+
+# Node/Frontend (if present)
+node_modules/
+dist/
+build/
+
+# Misc
+*.bak
+*.swp
+*.swo
+*.tmp
+*.orig

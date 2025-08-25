@@ -1,19 +1,20 @@
 # backend/schemas/search_schema.py
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
+from backend.schemas.offer_schema import OfferResponse
+
 class SearchBase(BaseModel):
-
     query: str
-    normalized_query: str
-    filters: Optional[str] = None
+    filters: Optional[dict] = None
 
-class SerachCreate(SearchBase):
+class SearchCreate(SearchBase):
     pass
 
 class SearchResponse(SearchBase):
     id: int
+    normalized_query: str
     created_at: datetime
 
     class Config:

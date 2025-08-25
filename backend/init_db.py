@@ -1,13 +1,12 @@
 # backend/init_db.py
-from .database import engine
-from .models.offers import Offer
-from .models.pricehistory import PriceHistory
-from .models.searches import Search
+import asyncio
 
+from backend.database import async_engine, Base
+from backend.models import offers, pricehistory, searches, search_offer_link
 
-def init_db():
-    from backend.database import Base
-    Base.metadata.create_all(bind=engine)
+async def async_init_db():
+    async with async_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
 if __name__ == "__main__":
-    init_db()
+    asyncio.run(async_init_db())
