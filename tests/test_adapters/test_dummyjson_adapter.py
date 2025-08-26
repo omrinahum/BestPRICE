@@ -1,7 +1,7 @@
 
 from decimal import Decimal
 import pytest
-from backend.adapters.dummyjson_adapter import _apply_client_side_filters, dummyjson_to_offer
+from backend.adapters.dummyjson_adapter import apply_client_side_filters, dummyjson_to_offer
 
 ITEMS = [
     {"id": 1, "title": "A", "price": 199.99, "rating": 4.7},
@@ -57,18 +57,18 @@ def test_price_range_filter():
     """
     Test the price range filter.
     """
-    filtered = _apply_client_side_filters(ITEMS, {"price": [90, 200]})
+    filtered = apply_client_side_filters(ITEMS, {"price": [90, 200]})
     ids = [item["id"] for item in filtered]
     assert set(ids) == {1, 2}
 
 def test_no_price_filter():
-    filtered = _apply_client_side_filters(ITEMS, {})
+    filtered = apply_client_side_filters(ITEMS, {})
     assert filtered == ITEMS
 
 def test_empty_items():
-    filtered = _apply_client_side_filters([], {"price": [0, 1000]})
+    filtered = apply_client_side_filters([], {"price": [0, 1000]})
     assert filtered == []
 
 def test_price_filter_out_of_range():
-    filtered = _apply_client_side_filters(ITEMS, {"price": [2000, 3000]})
+    filtered = apply_client_side_filters(ITEMS, {"price": [2000, 3000]})
     assert filtered == []

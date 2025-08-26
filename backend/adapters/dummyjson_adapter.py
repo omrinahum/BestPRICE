@@ -9,7 +9,7 @@ from backend.utils.error import ExternalAPIError
 # DummyJSON base URL for product search
 DUMMYJSON_BASE_URL = "https://dummyjson.com/products/search"
 
-def _apply_client_side_filters(items: List[Dict[str, Any]], filters: Dict[str, Any]) -> List[Dict[str, Any]]:
+def apply_client_side_filters(items: List[Dict[str, Any]], filters: Dict[str, Any]) -> List[Dict[str, Any]]:
     """
     Apply client-side filters to the list of items, because DummyJSON does not support server-side filtering.
     """
@@ -55,7 +55,7 @@ async def search_dummyjson(query: str, filters: Dict[str, Any], limit: int = 50)
 
     # Ensure structure, and apply filters
     products = data.get("products", [])
-    products = _apply_client_side_filters(products, filters)
+    products = apply_client_side_filters(products, filters)
 
     # Apply limit (rounded)
     if limit:

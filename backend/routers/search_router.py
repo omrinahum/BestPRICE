@@ -14,7 +14,7 @@ from backend.database import get_session
 from backend.utils.error import handle_api_errors
 
 
-router = APIRouter(tags=["Search"])
+router = APIRouter()
 
 def get_search_service() -> SearchService:
     """

@@ -59,8 +59,8 @@ def build_ebay_search_url(query: str, filters: dict, limit: int = 50) -> str:
     # Extract condition e.g: new, used
     # Ebay conventions- each condition has its own ID, expecpt format of "1000|3000"
     if "condition" in filters:
-        conds = "|".join(str(c) for c in convert_conditions_for_ebay(filters["condition"]))
-        filter_parts.append(f"conditionIds:{{{conds}}}")
+        condition_ids = "|".join(str(c) for c in convert_conditions_for_ebay(filters["condition"]))
+        filter_parts.append(f"conditionIds:{{{condition_ids}}}")
 
     # Round limit before using
     rounded_limit = round(limit) if limit else 50
