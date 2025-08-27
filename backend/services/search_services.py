@@ -16,27 +16,32 @@ class SearchService:
         self.repository = repository
         self.transform_service = transform_service
 
-    async def search_all_sources(self, query: str, filters: dict) -> Dict[str, List[dict]]:
+    async def search_all_sources(self, query: str) -> Dict[str, List[dict]]:
         """
         Search all external sources and return raw results
         """
         results = {}
 
-        # Search eBay
+        # Search eBay (optional - skip if credentials not available)
         try:
-            ebay_results = await search_ebay(query, filters)
-            results['ebay'] = ebay_results.get("itemSummaries", [])
+            ebay_results = await search_ebay(query, limit=50) 
+            ebay_items = ebay_results.get("itemSummaries", [])
+            results['ebay'] = ebay_items
+            logging.info(f"eBay search successful: {len(ebay_items)} items")
         except Exception as e:
-            logging.error(f"eBay search failed: {e}")
-            raise ExternalAPIError(f"eBay search failed: {e}")
+            logging.warning(f"eBay search failed (skipping): {e}")
+            results['ebay'] = []
 
         # Search DummyJSON
         try:
-            dummyjson_results = await search_dummyjson(query, filters)
+            dummyjson_results = await search_dummyjson(query, limit=50) 
+            dummy_items = dummyjson_results.get("products", [])
+            dummyjson_results["items_filtered"] = dummy_items
             results['dummyjson'] = dummyjson_results
+            logging.info(f"DummyJSON search successful: {len(dummy_items)} items")
         except Exception as e:
-            logging.error(f"DummyJSON search failed: {e}")
-            raise ExternalAPIError(f"DummyJSON search failed: {e}")
+            logging.warning(f"DummyJSON search failed (skipping): {e}")
+            results['dummyjson'] = []
 
         return results
 
@@ -58,7 +63,7 @@ class SearchService:
         search = await self.repository.create_search(search_data, session)
 
         # Fetch from external APIs
-        raw_data = await self.search_all_sources(search.normalized_query, search_data.filters)
+        raw_data = await self.search_all_sources(search.normalized_query)
 
         # Transform and validate data
         offers_data = self.transform_service(raw_data)

@@ -3,9 +3,10 @@ from backend.models.offers import Offer
 from backend.models.search_offer_link import SearchOfferLink
 from backend.schemas.offer_schema import OfferResponse
 from backend.utils.error import NotFoundError, ValidationError
+from backend.utils.filter import apply_filters
 
 async def get_offers_for_search(search_id: int, session, page: int = 1, page_size: int = 20,
-                                sort_by: str = "last_price", sort_order: str = "asc"):
+                                sort_by: str = "last_price", sort_order: str = "asc", filters: dict = None):
     """
     Fetch offers for a specific search ID with pagination.
     """
@@ -29,6 +30,12 @@ async def get_offers_for_search(search_id: int, session, page: int = 1, page_siz
 
     if not offers:
         return []
+    
+    # Apply filters 
+    if filters:
+        offers = apply_filters([OfferResponse.from_orm(o) for o in offers], filters)
+    else:
+        offers = [OfferResponse.from_orm(o) for o in offers]
 
     # Sort offers based on the provided criteria, reverse is true if "desc" is provided
     reverse_bool = sort_order == "desc"

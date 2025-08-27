@@ -1,4 +1,3 @@
-
 import pytest
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
@@ -11,7 +10,7 @@ from backend.utils.error import ExternalAPIError, NotFoundError
 
 
 
-def make_search_obj(id=1, query="laptop", normalized_query="laptop", filters=None, created_at=None):
+def make_search_obj(id=1, query="laptop", normalized_query="laptop", created_at=None):
     """
     Helper function to create a simple object compatible with SearchResponse.
     """
@@ -19,7 +18,6 @@ def make_search_obj(id=1, query="laptop", normalized_query="laptop", filters=Non
         id=id,
         query=query,
         normalized_query=normalized_query,
-        filters=filters or {},
         created_at=created_at or datetime.utcnow()
     )
 
@@ -28,23 +26,24 @@ async def test_search_all_sources_success(monkeypatch):
     """
     search_all_sources: returns aggregated results when both adapters succeed.
     """
-    # Fake adapter functions
-    async def fake_search_ebay(q, f):
+    # Fake adapter functions return unfiltered results
+    async def fake_search_ebay(q, limit=50, token=None):
         return {"itemSummaries": [{"itemId": "E1"}, {"itemId": "E2"}]}
-    async def fake_search_dummyjson(q, f):
-        return {"items_filtered": [{"id": 10}, {"id": 11}]}
+    async def fake_search_dummyjson(q, limit=50):
+        return {"products": [{"id": 10}, {"id": 11}]}
 
-    # Switch api fucntions with the fake ones
+    # Switch api functions with the fake ones
     monkeypatch.setattr("backend.services.search_services.search_ebay", fake_search_ebay)
     monkeypatch.setattr("backend.services.search_services.search_dummyjson", fake_search_dummyjson)
 
     service = SearchService(repository=MagicMock(), transform_service=MagicMock())
 
-    res = await service.search_all_sources("test", {"brand": "lenovo"})
+    res = await service.search_all_sources("test")
 
+    # After filtering, the results should be the same as the input (since no filter matches)
     assert "ebay" in res and "dummyjson" in res
     assert res["ebay"] == [{"itemId": "E1"}, {"itemId": "E2"}]
-    assert res["dummyjson"] == {"items_filtered": [{"id": 10}, {"id": 11}]}
+    assert res["dummyjson"]["items_filtered"] == [{"id": 10}, {"id": 11}]
 
 @pytest.mark.asyncio
 async def test_search_all_sources_ebay_error(monkeypatch):
@@ -52,9 +51,9 @@ async def test_search_all_sources_ebay_error(monkeypatch):
     search_all_sources: raises ExternalAPIError when eBay adapter fails.
     """
     # Fake adapter functions
-    async def bad_ebay(q, f):
+    async def bad_ebay(q):
         raise RuntimeError("ebay down")
-    async def ok_dummy(q, f):
+    async def ok_dummy(q):
         return {"items_filtered": []}
 
     # Switch api functions with the fake ones
@@ -65,15 +64,15 @@ async def test_search_all_sources_ebay_error(monkeypatch):
 
     # Check that ExternalAPIError is raised
     with pytest.raises(ExternalAPIError):
-        await service.search_all_sources("x", {})
+        await service.search_all_sources("x")
 
 @pytest.mark.asyncio
 async def test_search_all_sources_dummyjson_error(monkeypatch):
     """search_all_sources: raises ExternalAPIError when DummyJSON adapter fails."""
     # Fake adapter functions
-    async def ok_ebay(q, f):
+    async def ok_ebay(q):
         return {"itemSummaries": []}
-    async def bad_dummy(q, f):
+    async def bad_dummy(q):
         raise ValueError("dummyjson broken")
 
     # Switch api functions with the fake ones
@@ -84,7 +83,7 @@ async def test_search_all_sources_dummyjson_error(monkeypatch):
 
     # Check that ExternalAPIError is raised
     with pytest.raises(ExternalAPIError):
-        await service.search_all_sources("x", {})
+        await service.search_all_sources("x")
 
 
 @pytest.mark.asyncio
@@ -105,7 +104,7 @@ async def test_perform_search_cache_hit():
 
     service = SearchService(repository=repo, transform_service=MagicMock())
 
-    search_data = SearchCreate(query="laptop", filters={})
+    search_data = SearchCreate(query="laptop")
     session = MagicMock()
 
     res = await service.perform_search(search_data, session)
@@ -138,14 +137,14 @@ async def test_perform_search_cache_miss():
     service = SearchService(repository=repo, transform_service=MagicMock(return_value=[{"title": "ok"}]))
     service.search_all_sources = AsyncMock(return_value=fake_raw)
 
-    search_data = SearchCreate(query="phone", filters={"min_price": 10})
+    search_data = SearchCreate(query="phone")
     session = MagicMock()
 
     res = await service.perform_search(search_data, session)
 
     # Validate overall flow of a cache miss in perform_search 
     assert res.id == 1
-    service.search_all_sources.assert_awaited_once_with("phone", {"min_price": 10})
+    service.search_all_sources.assert_awaited_once_with("phone")
     service.transform_service.assert_called_once_with(fake_raw)
     repo.update_or_create_offer_with_history.assert_awaited_once()
     repo.create_search.assert_awaited_once_with(search_data, session)

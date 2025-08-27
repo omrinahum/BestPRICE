@@ -16,7 +16,7 @@ async def test_search_create_and_recent():
     """
     async with AsyncClient(app=app, base_url="http://test") as client:
         # Create a search
-        payload = {"query": "iphone", "filters": {"price": [100, 1000]}}
+        payload = {"query": "iphone"}
         res = await client.post("/search/", json=payload)
 
         # Check response
@@ -38,7 +38,7 @@ async def test_offers_and_price_history():
     """
     async with AsyncClient(app=app, base_url="http://test") as client:
         # Create a search
-        payload = {"query": "laptop", "filters": {"price": [200, 2000]}}
+        payload = {"query": "laptop"}
         resp = await client.post("/search/", json=payload)
 
         assert resp.status_code == 200
@@ -82,3 +82,30 @@ async def test_error_handling():
         price_resp = await client.get("/offers/price/999999")
         assert price_resp.status_code == 200
         assert price_resp.json() == []
+
+@pytest.mark.asyncio
+async def test_search_create_and_recent():
+    """
+    Test creating a search and getting recent searches.
+    """
+    async with AsyncClient(app=app, base_url="http://test") as client:
+        """
+        Test creating a search and getting recent searches.
+        """
+        # Create a search
+        data = {"query": "iphone"}
+        res = await client.post("/search/", json=data)
+        
+        # Check response
+        assert res.status_code == 200
+        data = res.json()
+        assert "id" in data and data["query"] == "iphone"
+        search_id = data["id"]
+
+        # Get offers for the search
+        offers_resp = await client.get(f"/offers/?search_id={search_id}&page=1&page_size=10&min_price=100&max_price=300")
+        assert offers_resp.status_code == 200
+        offers = offers_resp.json()
+        # All offers should have price in the requested range
+        for offer in offers:
+            assert 100 <= float(offer["last_price"]) <= 300

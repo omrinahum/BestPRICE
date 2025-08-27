@@ -9,30 +9,7 @@ from backend.utils.error import ExternalAPIError
 # DummyJSON base URL for product search
 DUMMYJSON_BASE_URL = "https://dummyjson.com/products/search"
 
-def apply_client_side_filters(items: List[Dict[str, Any]], filters: Dict[str, Any]) -> List[Dict[str, Any]]:
-    """
-    Apply client-side filters to the list of items, because DummyJSON does not support server-side filtering.
-    """
-    if not items:
-        return items
-
-    # price range filter 
-    price_rng = filters.get("price")
-    if price_rng and len(price_rng) == 2:
-        minp = float(price_rng[0] or 0)
-        maxp = float(price_rng[1] or float("inf"))
-        filtered_items = []
-        for item in items:
-            price = float(item.get("price", 0))
-            if minp <= price <= maxp:
-                filtered_items.append(item)
-        items = filtered_items
-
-    # condition is not supported by DummyJSON so ignore
-    return items
-
-
-async def search_dummyjson(query: str, filters: Dict[str, Any], limit: int = 50) -> Dict[str, Any]:
+async def search_dummyjson(query: str, limit: int = 50) -> Dict[str, Any]:
     """
     Execute a search query on DummyJSON.
     We'll apply price-range filtering client-side after fetching.
@@ -53,9 +30,7 @@ async def search_dummyjson(query: str, filters: Dict[str, Any], limit: int = 50)
         logging.error(f"[DummyJSON] request failed: {e}")
         raise ExternalAPIError("DummyJSON request failed") from e
 
-    # Ensure structure, and apply filters
     products = data.get("products", [])
-    products = apply_client_side_filters(products, filters)
 
     # Apply limit (rounded)
     if limit:
@@ -64,7 +39,7 @@ async def search_dummyjson(query: str, filters: Dict[str, Any], limit: int = 50)
             products = products[:rounded_limit]
     
     data["items_filtered"] = products
-    logging.info(f"[DummyJSON] fetched {len(products)} items (after filters) for query='{query}'")
+    logging.info(f"[DummyJSON] fetched {len(products)} items for query='{query}'")
     return data
 
 

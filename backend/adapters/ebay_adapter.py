@@ -42,36 +42,18 @@ async def get_valid_ebay_token() -> str:
     return ebay_token_cache
 
 
-def build_ebay_search_url(query: str, filters: dict, limit: int = 50) -> str:
+def build_ebay_search_url(query: str, limit: int = 50) -> str:
     """
-    Build the eBay search URL with the given query and filters.
+    Build the eBay search URL.
     """
-    filter_parts = []
-
-    # Extract price filter   
-    if "price" in filters:
-        min_price, max_price = filters["price"]     
-        if min_price is not None and max_price is not None and min_price > max_price:
-            raise ValidationError("Invalid price range")
-        
-        filter_parts.append(f"price:[{min_price}..{max_price}]")
-
-    # Extract condition e.g: new, used
-    # Ebay conventions- each condition has its own ID, expecpt format of "1000|3000"
-    if "condition" in filters:
-        condition_ids = "|".join(str(c) for c in convert_conditions_for_ebay(filters["condition"]))
-        filter_parts.append(f"conditionIds:{{{condition_ids}}}")
-
     # Round limit before using
     rounded_limit = round(limit) if limit else 50
     
     url = f"{EBAY_BASE_URL}?q={query}&limit={rounded_limit}"
-    if filter_parts:
-        url += "&filter=" + ",".join(filter_parts)
 
     return url
 
-async def search_ebay(query: str, filters: dict, limit: int = 50, token: Optional[str] = None) -> dict:
+async def search_ebay(query: str, limit: int = 50, token: Optional[str] = None) -> dict:
     """
     Execute a search query on eBay.
     """
@@ -80,7 +62,7 @@ async def search_ebay(query: str, filters: dict, limit: int = 50, token: Optiona
 
     # Round limit before passing to URL builder
     rounded_limit = round(limit) if limit else 50
-    url = build_ebay_search_url(query, filters, rounded_limit)
+    url = build_ebay_search_url(query, rounded_limit)
     headers = {"Authorization": f"Bearer {token}"} 
  
     try:

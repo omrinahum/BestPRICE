@@ -7,7 +7,6 @@ from backend.schemas.offer_schema import OfferResponse
 
 class SearchBase(BaseModel):
     query: str
-    filters: Optional[dict] = None
 
 class SearchCreate(SearchBase):
     pass

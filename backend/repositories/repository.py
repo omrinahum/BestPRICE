@@ -28,7 +28,6 @@ class Repository:
         search = Search(
             query=search_data.query,
             normalized_query=normalized_query,
-            filters=search_data.filters,
         )
         session.add(search)
         await session.flush()

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from backend.services.offer_service import get_offers_for_search
 from backend.services.pricehistory_service import get_price_history_for_offer
 from backend.schemas.offer_schema import OfferResponse
@@ -11,11 +11,16 @@ router = APIRouter()
 
 @router.get("/", response_model=list[OfferResponse])
 async def offers(search_id: int, page: int = 1, page_size: int = 20, sort_by: str = "last_price",
-                 sort_order: str = "asc", session: AsyncSession = Depends(get_session)):
+                 sort_order: str = "asc", min_price = Query(None), max_price = Query(None), 
+                 session: AsyncSession = Depends(get_session)):
     """
     Fetch offers for a specific search ID with pagination.
     """
-    return await get_offers_for_search(search_id, session, page, page_size, sort_by, sort_order)
+    # Build the filters dict
+    filters = {}
+    if min_price is not None or max_price is not None:
+        filters["price"] = [min_price, max_price]
+    return await get_offers_for_search(search_id, session, page, page_size, sort_by, sort_order, filters)
 
 @router.get("/price/{offer_id}", response_model=list[PriceHistoryResponse])
 async def offer_price_history(offer_id: int, session: AsyncSession = Depends(get_session)):
