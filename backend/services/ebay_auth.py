@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), "../.env")) 
 
-EBAY_OAUTH_URL = "https://api.sandbox.ebay.com/identity/v1/oauth2/token"
+EBAY_OAUTH_URL = "https://api.ebay.com/identity/v1/oauth2/token"
 EBAY_SCOPE = "https://api.ebay.com/oauth/api_scope"
 
 EBAY_CLIENT_ID = os.getenv("EBAY_CLIENT_ID")

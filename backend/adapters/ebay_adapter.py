@@ -10,14 +10,14 @@ from backend.utils.price import to_decimal, normalize_currency
 from backend.utils.error import ExternalAPIError, ValidationError
 
 # Ebay base api GET request struture for Search
-EBAY_BASE_URL = "https://api.sandbox.ebay.com/buy/browse/v1/item_summary/search"
+EBAY_BASE_URL = "https://api.ebay.com/buy/browse/v1/item_summary/search"
 
-# Ebay item condition mapping
-EBAY_CONDITION_MAP = {
-    "new": 1000,
-    "refurbished": 2000,
-    "used": 3000
-}
+# # Ebay item condition mapping ---- for filtering conditions - maybe use later
+# EBAY_CONDITION_MAP = {
+#     "new": 1000,
+#     "refurbished": 2000,
+#     "used": 3000
+# }
 
 # Ebay token data, reusable 
 ebay_token_cache: Optional[str] = None
@@ -42,18 +42,18 @@ async def get_valid_ebay_token() -> str:
     return ebay_token_cache
 
 
-def build_ebay_search_url(query: str, limit: int = 50) -> str:
+def build_ebay_search_url(query: str, limit: int = 120) -> str:
     """
     Build the eBay search URL.
     """
     # Round limit before using
-    rounded_limit = round(limit) if limit else 50
-    
+    rounded_limit = round(limit) if limit else 120
+
     url = f"{EBAY_BASE_URL}?q={query}&limit={rounded_limit}"
 
     return url
 
-async def search_ebay(query: str, limit: int = 50, token: Optional[str] = None) -> dict:
+async def search_ebay(query: str, limit: int = 120, token: Optional[str] = None) -> dict:
     """
     Execute a search query on eBay.
     """
@@ -61,7 +61,7 @@ async def search_ebay(query: str, limit: int = 50, token: Optional[str] = None) 
         token = await get_valid_ebay_token()
 
     # Round limit before passing to URL builder
-    rounded_limit = round(limit) if limit else 50
+    rounded_limit = round(limit) if limit else 120
     url = build_ebay_search_url(query, rounded_limit)
     headers = {"Authorization": f"Bearer {token}"} 
  
@@ -100,9 +100,3 @@ def ebay_to_offer(item: dict) -> dict:
         "rating": float(item.get("seller", {}).get("feedbackPercentage", 0.0)) if "seller" in item else None
     }
 
-
-def convert_conditions_for_ebay(conditions: list[str]) -> list[int]:
-    """
-    Convert a list of item conditions to eBay's internal condition IDs.
-    """
-    return [EBAY_CONDITION_MAP[c] for c in conditions if c in EBAY_CONDITION_MAP]

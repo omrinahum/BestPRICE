@@ -1,6 +1,6 @@
 
 import pytest
-from backend.adapters.ebay_adapter import ebay_to_offer, convert_conditions_for_ebay
+from backend.adapters.ebay_adapter import ebay_to_offer
 
 def test_ebay_to_offer_basic():
     """
@@ -28,18 +28,6 @@ def test_ebay_to_offer_basic():
     assert out["seller"] == "testSeller"
     assert out["image_url"] == "https://i.ebayimg.com/images/testID"
     assert isinstance(out["rating"], float)
-
-def test_convert_conditions_for_ebay_known_values():
-    """
-    convert_conditions_for_ebay: converts known readable conditions to eBay IDs.
-    """
-    # Known conditions mapping
-    out = convert_conditions_for_ebay(["new", "refurbished", "used", "not_in_map"])
-
-    # Check that known conditions are converted correctly
-    assert out == [1000, 2000, 3000]
-    # Unknown entries should be ignored 
-    assert "not_in_map" not in out
 
 def test_ebay_to_offer_missing_fields():
     """

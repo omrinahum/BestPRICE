@@ -5,9 +5,6 @@ from datetime import datetime
 
 from backend.services.search_services import SearchService
 from backend.schemas.search_schema import SearchCreate
-from backend.utils.error import ExternalAPIError, NotFoundError
-
-
 
 
 def make_search_obj(id=1, query="laptop", normalized_query="laptop", created_at=None):
@@ -46,7 +43,7 @@ async def test_search_all_sources_success(monkeypatch):
     assert res["dummyjson"]["items_filtered"] == [{"id": 10}, {"id": 11}]
 
 @pytest.mark.asyncio
-async def test_search_all_sources_ebay_error(monkeypatch):
+async def test_search_all_sources_ebay_error(monkeypatch, caplog):
     """
     search_all_sources: raises ExternalAPIError when eBay adapter fails.
     """
@@ -62,12 +59,14 @@ async def test_search_all_sources_ebay_error(monkeypatch):
 
     service = SearchService(repository=MagicMock(), transform_service=MagicMock())
 
-    # Check that ExternalAPIError is raised
-    with pytest.raises(ExternalAPIError):
-        await service.search_all_sources("x")
+    # Check that warnings are logged
+    with caplog.at_level("WARNING"):
+        res = await service.search_all_sources("x")
+        assert res["ebay"] == []
+        assert "eBay search failed (skipping)" in caplog.text
 
 @pytest.mark.asyncio
-async def test_search_all_sources_dummyjson_error(monkeypatch):
+async def test_search_all_sources_dummyjson_error(monkeypatch, caplog):
     """search_all_sources: raises ExternalAPIError when DummyJSON adapter fails."""
     # Fake adapter functions
     async def ok_ebay(q):
@@ -81,9 +80,11 @@ async def test_search_all_sources_dummyjson_error(monkeypatch):
 
     service = SearchService(repository=MagicMock(), transform_service=MagicMock())
 
-    # Check that ExternalAPIError is raised
-    with pytest.raises(ExternalAPIError):
-        await service.search_all_sources("x")
+    # Check that warnings are logged
+    with caplog.at_level("WARNING"):
+        res = await service.search_all_sources("x")
+        assert res["dummyjson"] == []
+        assert "DummyJSON search failed (skipping)" in caplog.text
 
 
 @pytest.mark.asyncio

@@ -24,7 +24,7 @@ class SearchService:
 
         # Search eBay (optional - skip if credentials not available)
         try:
-            ebay_results = await search_ebay(query, limit=50) 
+            ebay_results = await search_ebay(query) 
             ebay_items = ebay_results.get("itemSummaries", [])
             results['ebay'] = ebay_items
             logging.info(f"eBay search successful: {len(ebay_items)} items")
@@ -34,7 +34,7 @@ class SearchService:
 
         # Search DummyJSON
         try:
-            dummyjson_results = await search_dummyjson(query, limit=50) 
+            dummyjson_results = await search_dummyjson(query) 
             dummy_items = dummyjson_results.get("products", [])
             dummyjson_results["items_filtered"] = dummy_items
             results['dummyjson'] = dummyjson_results

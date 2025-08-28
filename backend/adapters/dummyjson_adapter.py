@@ -9,7 +9,7 @@ from backend.utils.error import ExternalAPIError
 # DummyJSON base URL for product search
 DUMMYJSON_BASE_URL = "https://dummyjson.com/products/search"
 
-async def search_dummyjson(query: str, limit: int = 50) -> Dict[str, Any]:
+async def search_dummyjson(query: str, limit: int = 120) -> Dict[str, Any]:
     """
     Execute a search query on DummyJSON.
     We'll apply price-range filtering client-side after fetching.

@@ -1,6 +1,6 @@
 def apply_filters(items, filters):
     """
-    Apply filters (price, condition, etc.) to a list of offer dicts or Pydantic models.
+    Apply filters (price, source, rating etc.) to a list of offer dicts or Pydantic models.
     """
     if not items:
         return items
@@ -19,5 +19,13 @@ def apply_filters(items, filters):
             return float(item.get("last_price", 0))
         
         items = [item for item in items if minp <= get_price(item) <= maxp]
+
+    # Source filter
+    if "source" in filters:
+        items = [item for item in items if item.source == filters["source"]]
+
+    # Min rating filter
+    if "min_rating" in filters:
+        items = [item for item in items if item.rating >= filters["min_rating"]]
 
     return items
