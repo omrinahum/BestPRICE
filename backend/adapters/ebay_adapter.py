@@ -97,6 +97,24 @@ def ebay_to_offer(item: dict) -> dict:
         "source_offer_id": item.get("itemId", ""),
         "seller": item.get("seller", {}).get("username", None),
         "image_url": item.get("image", {}).get("imageUrl", None),
-        "rating": float(item.get("seller", {}).get("feedbackPercentage", 0.0)) if "seller" in item else None
+        "rating": normalize_rating(item.get("seller", {}).get("feedbackPercentage", 0.0)) if "seller" in item else None
     }
+
+def normalize_rating(rating) -> float:
+    """
+    Normalize the rating to a 0-5 scale
+    """
+    if rating is None:
+        return None
+    
+    # Convert to float if it's a string
+    try:
+        rating_float = float(rating)
+    except (ValueError, TypeError):
+        return None
+    
+    # Normalize seller feedback percentage (0-100) to a 0-5 rating
+    normalized_rating = round(max(0.0, min(100.0, rating_float)) / 20.0, 2)
+
+    return normalized_rating
 

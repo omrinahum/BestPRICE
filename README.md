@@ -1,109 +1,109 @@
-# BestPRICE - Price Comparison Application
+# BestPRICE - Price Comparison API
 
-A modern price comparison application that helps users find the best prices across multiple sources. Built with FastAPI backend and React frontend.
+Price comparison platform with real-time data aggregation from Amazon, Ebay and more. Features async processing, intelligent caching, and comprehensive API integration.
 
-## 🚀 Features
+## Key Features
 
-- **Smart Search**: Search for products across multiple sources
-- **Price Comparison**: Compare prices from different retailers
-- **Price History**: Track price changes over time
-- **Filtering & Sorting**: Advanced filtering by price range and sorting options
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
-- **Real-time Updates**: Live price tracking and updates
+- **Multi-Source Aggregation**: Parallel API calls to eBay, Amazon, and DummyJSON
+- **Intelligent Caching**: OAuth2 token caching with automatic refresh (2-hour expiry)
+- **Async Processing**: Non-blocking I/O operations for optimal performance
+- **Advanced Filtering**: Price range, source, and rating-based filtering
+- **Price History Tracking**: Historical price data with trend analysis
+- **Cross-Platform Compatibility**: Windows, Linux, macOS support
 
-## 🏗️ Architecture
+## Architecture Highlights
 
-- **Backend**: FastAPI with SQLAlchemy ORM
-- **Frontend**: React 19 with Vite
-- **Database**: SQLite (can be easily switched to PostgreSQL/MySQL)
-- **API**: RESTful API with automatic documentation
+- **Clean Architecture**: Separation of concerns with adapters, services, and repositories
+- **Database Abstraction**: SQLAlchemy ORM with async support
+- **API Rate Limiting**: Respectful external API usage
+- **Type Safety**: Pydantic models for data validation
+- **Comprehensive Testing**: Unit, integration, and adapter tests
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 BestPRICE/
-├── backend/                 # FastAPI backend
-│   ├── routers/            # API route handlers
+├── backend/
+│   ├── adapters/           # External API integrations
+│   │   ├── ebay_adapter.py
+│   │   ├── amazon_adapter.py
+│   │   └── dummyjson_adapter.py
 │   ├── models/             # Database models
-│   ├── schemas/            # Pydantic schemas
+│   │   ├── offers.py
+│   │   └── pricehistory.py
+│   ├── routers/            # API endpoints
+│   │   ├── search_router.py
+│   │   └── offer_router.py
 │   ├── services/           # Business logic
-│   ├── adapters/           # External API adapters
-│   └── utils/              # Utility functions
-├── frontend/               # React frontend
-│   ├── src/
-│   │   ├── components/     # React components
-│   │   ├── App.jsx         # Main app component
-│   │   └── App.css         # Application styles
-│   └── package.json        # Frontend dependencies
-├── tests/                  # Test suite
-├── requirements.txt        # Python dependencies
-└── README.md              # This file
+│   │   ├── offer_service.py
+│   │   ├── data_transformation_service.py
+│   │   └── ebay_auth.py
+│   ├── repositories/       # Data access layer
+│   ├── utils/              # Helper functions
+│   └── main.py             # FastAPI application
+├── tests/                  # Comprehensive test suite
+│   ├── test_adapters/
+│   ├── test_services/
+│   ├── test_integration/
+│   └── test_repository/
+├── frontend/               # React frontend (planned)
+└── requirements.txt
 ```
 
-## 🛠️ Installation
+## Setup
 
-### Prerequisites
-
-- Python 3.8+
-- Node.js 18+
-- npm or yarn
+**Prerequisites:** Python 3.8+, Node.js 18+, eBay API credentials
 
 ### Backend Setup
 
-1. **Clone the repository**:
 ```bash
+# 1. Clone the repository
 git clone <repository-url>
 cd BestPRICE
-```
 
-2. **Create and activate virtual environment**:
-```bash
+# 2. Create virtual environment
 python -m venv venv
-# On Windows:
+
+# 3.Activate virtual environment (Windows)
 venv\Scripts\activate
-# On Unix/MacOS:
+
+# 4.Activate virtual environment (Linux/macOS)
 source venv/bin/activate
-```
 
-3. **Install Python dependencies**:
-```bash
+# 5. Install dependencies
 pip install -r requirements.txt
+
+# 6. Initialize database
+python backend.init_db.py
 ```
 
-4. **Initialize the database**:
-```bash
-cd backend
-python init_db.py
+**Environment Configuration:**
+Create `backend/.env`:
+```env
+# Database Configuration
+DATABASE_URL=sqlite:///./bestprice.db
+ASYNC_DATABASE_URL=sqlite+aiosqlite:///./bestprice.db
+
+# eBay API (Required)
+EBAY_CLIENT_ID=your_ebay_client_id_here
+EBAY_CLIENT_SECRET=your_ebay_client_secret_here
+
+# Amazon API via RapidAPI (Optional)
+AMAZON_API_KEY=your_rapidapi_key_here
 ```
 
 ### Frontend Setup
 
-1. **Install Node.js dependencies**:
 ```bash
 cd frontend
 npm install
 ```
 
-## 🚀 Running the Application
-
-### Option 1: Run Both Servers (Recommended)
-
-**Windows:**
-```bash
-.\run_app.ps1
-```
-
-**Unix/MacOS:**
-```bash
-./run_app.sh
-```
-
-### Option 2: Run Servers Separately
+## Running
 
 **Backend:**
 ```bash
-cd backend
-python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
+uvicorn backend.main:app --reload --port 8000
 ```
 
 **Frontend:**
@@ -112,179 +112,85 @@ cd frontend
 npm run dev
 ```
 
-### Access URLs
+**Access:**
+- Frontend: http://localhost:5173
+- API: http://localhost:8000
+- Docs: http://localhost:8000/docs
 
-- **Frontend**: http://localhost:5173
-- **Backend API**: http://localhost:8000
-- **API Documentation**: http://localhost:8000/docs
-- **Alternative API Docs**: http://localhost:8000/redoc
+## API Endpoints
 
-## 📚 API Endpoints
+**Search:**
+- `POST /search/` - Create search
+- `GET /search/recent` - Recent searches
 
-### Search
-- `POST /search/` - Create a new search
-- `GET /search/recent` - Get recent searches
+**Offers:**
+- `GET /offers?search_id={id}` - Get offers (supports filtering: min_price, max_price, source, min_rating)
+- `GET /offers/price/{offer_id}` - Price history
 
-### Offers
-- `GET /offers` - Get offers with filtering and pagination
-- `GET /offers/price/{offer_id}` - Get price history for an offer
+**Health:**
+- `GET /health` - Status check
 
-### Health
-- `GET /health` - Health check endpoint
+## Testing
 
-### Query Parameters for Offers
-
-- `search_id` (required): ID of the search
-- `page` (optional): Page number (default: 1)
-- `page_size` (optional): Items per page (default: 20)
-- `sort_by` (optional): Sort field - 'last_price' or 'created_at' (default: 'last_price')
-- `sort_order` (optional): Sort order - 'asc' or 'desc' (default: 'asc')
-- `min_price` (optional): Minimum price filter
-- `max_price` (optional): Maximum price filter
-
-## 🎨 Frontend Features
-
-### Search Interface
-- Clean, intuitive search form
-- Real-time validation
-- Loading states and error handling
-
-### Offers Display
-- Responsive grid layout
-- Product images with fallbacks
-- Price, seller, and rating information
-- Source badges and external links
-
-### Filtering & Sorting
-- Price range filtering
-- Sort by price or date
-- Clear filters functionality
-- Server-side processing for performance
-
-### Price History
-- Modal popup with detailed information
-- Price change calculations
-- Chronological history display
-- Interactive charts (future enhancement)
-
-## 🧪 Testing
-
-### Backend Tests
+**Run All Tests:**
 ```bash
-# Run all tests
+# Activate virtual environment first
 pytest
-
-# Run with coverage
-pytest --cov=backend
-
-# Run specific test file
-pytest tests/test_services/test_offer_service.py
 ```
 
-### Frontend Tests
+**Test Categories:**
 ```bash
-cd frontend
-npm test
+# Adapter tests (external API integration)
+pytest tests/test_adapters/ -v
+
+# Service layer tests
+pytest tests/test_services/ -v
+
+# Integration tests
+pytest tests/test_integration/ -v
+
+# Repository tests
+pytest tests/test_repository/ -v
+
+# Coverage report
+pytest --cov=backend --cov-report=html
 ```
 
-## 🚀 Deployment
-
-### Backend Deployment
-
-1. **Production server setup**:
+**Platform-Specific Test Scripts:**
 ```bash
-pip install gunicorn
-gunicorn backend.main:app -w 4 -k uvicorn.workers.UvicornWorker
+# Windows
+.\run_tests_windows.ps1
+
+# Linux/macOS
+./run_tests.sh
 ```
 
-2. **Environment variables**:
-```bash
-export DATABASE_URL="postgresql://user:password@localhost/bestprice"
-export SECRET_KEY="your-secret-key"
-```
+## Tech Stack
 
-### Frontend Deployment
+**Backend:**
+- FastAPI (async web framework)
+- SQLAlchemy (ORM with async support)
+- Pydantic (data validation)
+- aiosqlite (async SQLite driver)
+- httpx (async HTTP client)
+- pytest (testing framework)
 
-1. **Build for production**:
-```bash
-cd frontend
-npm run build
-```
+**Frontend:**
+- React 18+ 
+- Vite as a build tool
 
-2. **Serve static files**:
-```bash
-npm install -g serve
-serve -s dist -l 3000
-```
+**External APIs:**
+- eBay Browse API (OAuth2)
+- Amazon Product API (RapidAPI)
+- DummyJSON (testing)
+- More APIs can be added as needed
 
-## 🔧 Configuration
+## Performance Features
 
-### Backend Configuration
-
-Create a `.env` file in the backend directory:
-```env
-DATABASE_URL=sqlite:///./bestprice.db
-SECRET_KEY=your-secret-key-here
-DEBUG=True
-```
-
-### Frontend Configuration
-
-Update API base URL in `frontend/src/App.jsx` if needed:
-```javascript
-const API_BASE_URL = 'http://localhost:8000';
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🆘 Support
-
-If you encounter any issues:
-
-1. Check the [Issues](https://github.com/your-repo/issues) page
-2. Create a new issue with detailed information
-3. Include error logs and steps to reproduce
-
-## 🔮 Future Enhancements
-
-- [ ] User authentication and profiles
-- [ ] Price alerts and notifications
-- [ ] Advanced analytics and charts
-- [ ] Mobile app (React Native)
-- [ ] Machine learning price predictions
-- [ ] Integration with more retailers
-- [ ] Social features and reviews
-- [ ] Export functionality
-- [ ] Dark mode theme
-- [ ] Internationalization (i18n)
-
-## 📊 Performance
-
-- **Backend**: FastAPI provides excellent performance with async support
-- **Frontend**: React 19 with optimized rendering
-- **Database**: Efficient queries with proper indexing
-- **Caching**: Redis integration for improved performance (future)
-
-## 🔒 Security
-
-- Input validation with Pydantic
-- CORS configuration
-- SQL injection protection
-- XSS prevention
-- Rate limiting (future enhancement)
-
----
-
-**Built with ❤️ using FastAPI and React**
+- **Async Architecture**: Non-blocking I/O operations
+- **Connection Pooling**: Efficient database connections
+- **Search Caching**: Reduces API calls overhead
+- **Parallel Processing**: Concurrent external API calls
+- **Database Indexing**: Optimized queries on price, source, date fields
 
 

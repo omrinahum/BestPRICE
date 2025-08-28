@@ -1,0 +1,42 @@
+:root {
+  /* Primary: light blue (Periwinkle family) */
+  --bp-primary: #A2DCEE;     /* main */
+  --bp-primary-strong: #A2B9EE; /* stronger */
+  --bp-primary-deep: #9A9CEA;   /* deepest accent */
+
+  /* Secondary: light green */
+  --bp-secondary: #ADEEE2;
+
+  --bp-text: #1f2a44;
+  --bp-muted: #64748b;
+
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: var(--bp-text);
+  background-color: #f8fafc;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  margin: 0 auto;
+}

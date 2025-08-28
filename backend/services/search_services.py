@@ -6,7 +6,8 @@ from typing import Dict, List
 import logging
 from backend.schemas.search_schema import SearchCreate, SearchResponse
 from backend.adapters.ebay_adapter import search_ebay
-from backend.adapters.dummyjson_adapter import search_dummyjson, dummyjson_to_offer
+from backend.adapters.dummyjson_adapter import search_dummyjson
+from backend.adapters.amazon_adapter import search_amazon
 from backend.services.data_transformation_service import transform_search_results
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend.utils.error import ValidationError, NotFoundError, ExternalAPIError
@@ -43,6 +44,15 @@ class SearchService:
             logging.warning(f"DummyJSON search failed (skipping): {e}")
             results['dummyjson'] = []
 
+        # Search Amazon
+        try:
+            amazon_results = await search_amazon(query)
+            results['amazon'] = amazon_results
+            logging.info(f"Amazon search successful: {len(amazon_results.get('products', []))} items")
+        except Exception as e:
+            logging.warning(f"Amazon search failed (skipping): {e}")
+            results['amazon'] = {"products": []}
+        
         return results
 
     

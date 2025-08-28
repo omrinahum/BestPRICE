@@ -36,10 +36,6 @@ htmlcov/
 nosetests.xml
 coverage.xml
 
-# Alembic migration files (if you use alembic)
-alembic.ini
-migrations/
-
 # Logs
 *.log
 
@@ -55,4 +51,3 @@ build/
 *.tmp
 *.orig
 
-frontend/
