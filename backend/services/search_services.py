@@ -57,7 +57,7 @@ class SearchService:
 
     
 
-    async def perform_search(self, search_data: SearchCreate, session: AsyncSession) -> SearchResponse:
+    async def perform_search(self, search_data: SearchCreate, session: AsyncSession, user_id: int = None) -> SearchResponse:
         """
         Orchestrates the search process - this is the business logic layer
         """
@@ -69,8 +69,8 @@ class SearchService:
             print("Using cached results")
             return SearchResponse.from_orm(cached_search)
         
-        # Create search record
-        search = await self.repository.create_search(search_data, session)
+        # Create search record with optional user association
+        search = await self.repository.create_search(search_data, session, user_id)
 
         # Fetch from external APIs
         raw_data = await self.search_all_sources(search.normalized_query)

@@ -2,7 +2,7 @@
 import asyncio
 
 from backend.database import async_engine, Base
-from backend.models import offers, pricehistory, searches, search_offer_link
+from backend.models import offers, pricehistory, searches, search_offer_link, users
 
 async def async_init_db():
     async with async_engine.begin() as conn:

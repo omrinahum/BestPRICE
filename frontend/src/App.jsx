@@ -3,9 +3,15 @@ import './App.css'
 import SearchForm from './components/SearchForm'
 import OffersGrid from './components/OffersGrid'
 import PriceHistoryModal from './components/PriceHistoryModal'
-import { Search, Package, TrendingUp } from 'lucide-react'
+import Navigation from './components/Navigation'
+import Login from './components/Login'
+import Register from './components/Register'
+import ProtectedRoute from './components/ProtectedRoute'
+import { useAuth } from './contexts/AuthContext'
+import { Search, Package, TrendingUp, X } from 'lucide-react'
 
 function App() {
+  const { isAuthenticated, loading: authLoading } = useAuth()
   const [currentSearch, setCurrentSearch] = useState(null)
   const [offers, setOffers] = useState([])
   const [pagination, setPagination] = useState({
@@ -19,6 +25,8 @@ function App() {
   const [selectedOffer, setSelectedOffer] = useState(null)
   const [showPriceHistory, setShowPriceHistory] = useState(false)
   const [showWelcome, setShowWelcome] = useState(true)
+  const [showAuthModal, setShowAuthModal] = useState(false)
+  const [authMode, setAuthMode] = useState('login') // 'login' or 'register'
 
   const handleSearch = async (searchData) => {
     setLoading(true)
@@ -27,10 +35,12 @@ function App() {
     try {
       console.log('Sending search request:', searchData)
       
+      const token = localStorage.getItem('token')
       const response = await fetch('http://localhost:8000/search/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(searchData),
       })
@@ -77,7 +87,12 @@ function App() {
       const url = `http://localhost:8000/offers/?${params}`
       console.log('Fetching offers from:', url)
       
-      const response = await fetch(url)
+      const token = localStorage.getItem('token')
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      })
       
       console.log('Offers response status:', response.status)
       
@@ -137,17 +152,41 @@ function App() {
     setSelectedOffer(null)
   }
 
+  const handleGetStarted = () => {
+    if (isAuthenticated) {
+      setShowWelcome(false)
+    } else {
+      setAuthMode('login')
+      setShowAuthModal(true)
+    }
+  }
+
+  const handleCloseAuthModal = () => {
+    setShowAuthModal(false)
+    // If user just logged in, hide welcome screen
+    if (isAuthenticated) {
+      setShowWelcome(false)
+    }
+  }
+
+  const handleSwitchAuthMode = () => {
+    setAuthMode(authMode === 'login' ? 'register' : 'login')
+  }
+
+  if (authLoading) {
+    return (
+      <div className="app">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="app">
-      <header className="header">
-        <div className="header-content">
-          <div className="logo">
-            <Package className="logo-icon" />
-            <h1>BestPRICE</h1>
-          </div>
-          <p className="tagline">Find the best prices across multiple sources</p>
-        </div>
-      </header>
+      <Navigation />
 
       <main className="main">
         {showWelcome ? (
@@ -169,13 +208,13 @@ function App() {
                   <span>Multiple Sources</span>
                 </div>
               </div>
-              <button className="get-started-button" onClick={() => setShowWelcome(false)}>
+              <button className="get-started-button" onClick={handleGetStarted}>
                 Get Started
               </button>
             </div>
           </div>
         ) : (
-          <>
+          <ProtectedRoute>
             <SearchForm onSearch={handleSearch} loading={loading} />
             
             {error && (
@@ -203,7 +242,29 @@ function App() {
                 onClose={handleClosePriceHistory}
               />
             )}
-          </>
+          </ProtectedRoute>
+        )}
+
+        {/* Authentication Modal */}
+        {showAuthModal && (
+          <div className="modal-overlay">
+            <div className="auth-modal">
+              <button className="auth-modal-close" onClick={handleCloseAuthModal}>
+                <X size={24} />
+              </button>
+              {authMode === 'login' ? (
+                <Login 
+                  onSwitchToRegister={handleSwitchAuthMode}
+                  onClose={handleCloseAuthModal}
+                />
+              ) : (
+                <Register 
+                  onSwitchToLogin={handleSwitchAuthMode}
+                  onClose={handleCloseAuthModal}
+                />
+              )}
+            </div>
+          </div>
         )}
       </main>
     </div>

@@ -1,5 +1,5 @@
 # models/searches.py
-from sqlalchemy import Column, Integer, String, DateTime, JSON
+from sqlalchemy import Column, Integer, String, DateTime, JSON, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from backend.database import Base
@@ -11,9 +11,9 @@ class Search(Base):
     id = Column(Integer, primary_key=True, index=True)                         # search id
     query = Column(String(255), nullable=False, index=True)                    # query that the user searched
     normalized_query = Column(String(255), nullable=False, index=True)         # normalized query (lowercase, no extra spaces)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)           # which user made this search (nullable for backward compatibility)
     created_at = Column(DateTime(timezone=True), server_default=func.now())    # when the search was made
 
     # Relationships 
-    offer_links = relationship("SearchOfferLink", back_populates="search")
-
-    
+    offer_links = relationship("SearchOfferLink", back_populates="search")     # link to offers in the search
+    user = relationship("User", back_populates="searches")                     # link to user who made the search

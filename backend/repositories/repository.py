@@ -20,14 +20,15 @@ class Repository:
             raise ValidationError("Query must be a non-empty string.")
         return re.sub(r"\s+", " ", query.strip().lower())
 
-    async def create_search(self, search_data: SearchCreate, session: AsyncSession) -> Search:
+    async def create_search(self, search_data: SearchCreate, session: AsyncSession, user_id: int = None) -> Search:
         """
-        Create a new search record
+        Create a new search record with optional user association
         """
         normalized_query = self.normalize_query(search_data.query)
         search = Search(
             query=search_data.query,
             normalized_query=normalized_query,
+            user_id=user_id,  # link to user if provided
         )
         session.add(search)
         await session.flush()
@@ -103,6 +104,30 @@ class Repository:
         """
         return PriceHistory(offer_id=offer_id, price=price, currency=currency)
     
+    async def get_user_recent_searches(self, user_id: int, session: AsyncSession, limit: int = 10) -> List[Search]:
+        """
+        Return the most recent searches for a specific user.
+        """
+        # Validation for limit
+        if limit < 1:
+            raise ValidationError("Limit must be atleast 1.")
+        
+        # Get the most recent searches for a specific user
+        query = (
+            select(Search)
+            .where(Search.user_id == user_id)
+            .order_by(desc(Search.created_at))
+            .limit(limit)        
+        )
+
+        # Execute the query and return the results
+        results = await session.execute(query)
+        results = results.scalars().all()
+        if not results:
+            return []
+        
+        return results
+
     async def get_recent_searches(self, session: AsyncSession, limit: int = 10) -> List[Search]:
         """
         Return the most recent searches.
@@ -111,11 +136,14 @@ class Repository:
         if limit < 1 :
             raise ValidationError("Limit must be atleast 1.")
         
+        # Get the most recent searches
         query=(
             select(Search)
             .order_by(desc(Search.created_at))
             .limit(limit)        
         )
+
+        # Execute the query and return the results
         results = await session.execute(query)
         results = results.scalars().all()
         if not results:
