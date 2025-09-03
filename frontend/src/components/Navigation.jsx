@@ -6,19 +6,22 @@ const Navigation = () => {
 
   const handleLogout = () => {
     logout()
+    // Force redirect to home page after logout
+    window.location.href = '/'
   }
 
   return (
     <header className="header">
       <div className="header-content">
-        <div className="logo">
-          <Package className="logo-icon" />
-          <h1>BestPRICE</h1>
+        <div className="header-left">
+          <div className="logo">
+            <Package className="logo-icon" />
+            <h1>BestPRICE</h1>
+          </div>
         </div>
-        <p className="tagline">Find the best prices across multiple sources</p>
         
         {user && (
-          <div className="nav-user">
+          <div className="header-right">
             <div className="user-info">
               <User className="user-icon" />
               <span className="user-name">{user.full_name}</span>

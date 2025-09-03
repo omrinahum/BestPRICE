@@ -49,7 +49,6 @@ class WatchlistItemResponse(WatchlistItemBase):
     current_price: Optional[float] = None
     source: Optional[str] = None
     product_image_url: Optional[str] = None
-    is_active: bool
     created_at: datetime
 
     class Config:

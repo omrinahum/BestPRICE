@@ -1,6 +1,12 @@
-import { ExternalLink, TrendingUp, Star, User, Package } from 'lucide-react'
+import { ExternalLink, TrendingUp, Star, User, Package, Heart } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
-const OfferCard = ({ offer, onClick }) => {
+const OfferCard = ({ offer, onClick, userWatchlist, onWatchlistUpdate }) => {
+  const { isAuthenticated, token } = useAuth()
+  const [isInWatchlist, setIsInWatchlist] = useState(false)
+  const [isWatchlistLoading, setIsWatchlistLoading] = useState(false)
   const handleCardClick = () => {
     window.open(offer.url, '_blank')
   }
@@ -8,6 +14,61 @@ const OfferCard = ({ offer, onClick }) => {
   const handlePriceHistoryClick = (e) => {
     e.stopPropagation()
     onClick(offer)
+  }
+
+  // Check if offer is in watchlist using passed watchlist data
+  useEffect(() => {
+    if (!isAuthenticated || !userWatchlist) {
+      setIsInWatchlist(false)
+      return
+    }
+    
+    const isInList = userWatchlist.some(item => item.offer_id === offer.id)
+    setIsInWatchlist(isInList)
+  }, [isAuthenticated, userWatchlist, offer.id])
+
+  const handleWatchlistToggle = async (e) => {
+    e.stopPropagation()
+    
+    if (!isAuthenticated) {
+      alert('Please login to add items to your watchlist')
+      return
+    }
+
+    setIsWatchlistLoading(true)
+    
+    try {
+      if (isInWatchlist) {
+        // Remove from watchlist
+        await axios.delete(`http://localhost:8000/user/watchlist/${offer.id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        setIsInWatchlist(false)
+        // Update parent state
+        if (onWatchlistUpdate) {
+          onWatchlistUpdate(offer.id, false)
+        }
+      } else {
+        // Add to watchlist
+        const response = await axios.post('http://localhost:8000/user/watchlist', {
+          offer_id: offer.id,
+          product_title: offer.title,
+          product_url: offer.url
+        }, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        setIsInWatchlist(true)
+        // Update parent state with new item
+        if (onWatchlistUpdate) {
+          onWatchlistUpdate(offer.id, true, response.data)
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling watchlist:', error)
+      alert('Failed to update watchlist. Please try again.')
+    } finally {
+      setIsWatchlistLoading(false)
+    }
   }
 
   return (
@@ -52,16 +113,16 @@ const OfferCard = ({ offer, onClick }) => {
           )}
         </div>
 
-        <div className="offer-actions">
+        <div className="offer-actions">          
           <button 
             className="action-button price-history-button"
             onClick={handlePriceHistoryClick}
             title="View price history"
           >
-            <TrendingUp size={16} />
+            <TrendingUp size={14} />
             History
           </button>
-          
+
           <button 
             className="action-button external-link-button"
             onClick={(e) => {
@@ -70,9 +131,21 @@ const OfferCard = ({ offer, onClick }) => {
             }}
             title="View on external site"
           >
-            <ExternalLink size={16} />
+            <ExternalLink size={14} />
             View
           </button>
+          
+          {isAuthenticated && (
+            <button 
+              className={`action-button watchlist-button ${isInWatchlist ? 'in-watchlist' : ''}`}
+              onClick={handleWatchlistToggle}
+              disabled={isWatchlistLoading}
+              title={isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist'}
+            >
+              <Heart size={14} fill={isInWatchlist ? 'currentColor' : 'none'} />
+              {isWatchlistLoading ? '...' : (isInWatchlist ? 'Saved' : 'Save')}
+            </button>
+          )}
         </div>
       </div>
     </div>

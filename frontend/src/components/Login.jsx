@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { Mail, Lock, Eye, EyeOff, LogIn } from 'lucide-react'
 
-const Login = ({ onSwitchToRegister, onClose }) => {
+const Login = ({ onSwitchToRegister, onClose, onSuccess }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -19,7 +19,7 @@ const Login = ({ onSwitchToRegister, onClose }) => {
     const result = await login(username, password)
     
     if (result.success) {
-      onClose()
+      onSuccess ? onSuccess() : onClose()
     } else {
       setError(result.error)
     }

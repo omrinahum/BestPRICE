@@ -40,10 +40,11 @@ class UserService:
             hashed_password=hashed_password
         )
         
-        # Save user to database
+        # Save user to database and commit transaction
         session.add(user)
         await session.flush()
         await session.refresh(user)
+        await session.commit()
         return user
 
     async def authenticate_user(self, username: str, password: str, session: AsyncSession) -> Optional[User]:
@@ -109,6 +110,7 @@ class UserService:
         """
         Add item to user's watchlist, if offer_id is provided, get offer details to populate watchlist
         """
+        
         offer = None
 
         # If offer_id is provided, get offer details to populate watchlist
@@ -132,33 +134,33 @@ class UserService:
             product_image_url=offer.image_url if offer else None
         )
         
-        # Add watchlist item to session
+        # Add watchlist item to session and commit transaction
         session.add(watchlist_item)
         await session.flush()
         await session.refresh(watchlist_item)
+        await session.commit()
         return watchlist_item
 
     async def get_user_watchlist(self, user_id: int, session: AsyncSession) -> List[UserWatchlist]:
         """
-        Get all active watchlist items for a user
+        Get all watchlist items for a user
         """
-        # Get all active watchlist items for a user
+        # Get all watchlist items for a user
         query = (
             select(UserWatchlist)
             .where(UserWatchlist.user_id == user_id)
-            .where(UserWatchlist.is_active == True)
             .order_by(UserWatchlist.created_at.desc())
         )
         result = await session.execute(query)
         return result.scalars().all()
 
-    async def remove_from_watchlist(self, user_id: int, watchlist_item_id: int, session: AsyncSession) -> bool:
+    async def remove_from_watchlist(self, user_id: int, watchlist_offer_id: int, session: AsyncSession) -> bool:
         """
-        Remove item from user's watchlist (soft delete)
+        Remove item from user's watchlist (hard delete)
         """
         # Get watchlist item by ID and user ID
         query = select(UserWatchlist).where(
-            UserWatchlist.id == watchlist_item_id,
+            UserWatchlist.offer_id == watchlist_offer_id,
             UserWatchlist.user_id == user_id
         )
         result = await session.execute(query)
@@ -168,7 +170,7 @@ class UserService:
         if not watchlist_item:
             raise NotFoundError("Watchlist item not found")
         
-        # Soft delete watchlist item
-        watchlist_item.is_active = False
-        await session.flush()
+        # Hard delete watchlist item and commit transaction
+        await session.delete(watchlist_item)
+        await session.commit()
         return True

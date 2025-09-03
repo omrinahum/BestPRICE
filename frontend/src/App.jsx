@@ -7,6 +7,8 @@ import Navigation from './components/Navigation'
 import Login from './components/Login'
 import Register from './components/Register'
 import ProtectedRoute from './components/ProtectedRoute'
+import Sidebar from './components/Sidebar'
+import WatchlistView from './components/WatchlistView'
 import { useAuth } from './contexts/AuthContext'
 import { Search, Package, TrendingUp, X } from 'lucide-react'
 
@@ -27,6 +29,8 @@ function App() {
   const [showWelcome, setShowWelcome] = useState(true)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [authMode, setAuthMode] = useState('login') // 'login' or 'register'
+  const [currentView, setCurrentView] = useState('search') // 'search' or 'watchlist'
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   const handleSearch = async (searchData) => {
     setLoading(true)
@@ -169,8 +173,22 @@ function App() {
     }
   }
 
+  const handleAuthSuccess = () => {
+    setShowAuthModal(false)
+    setShowWelcome(false)
+  }
+
   const handleSwitchAuthMode = () => {
     setAuthMode(authMode === 'login' ? 'register' : 'login')
+  }
+
+  const handleWatchlistClick = () => {
+    setCurrentView('watchlist')
+    setShowWelcome(false)
+  }
+
+  const handleSearchClick = () => {
+    setCurrentView('search')
   }
 
   if (authLoading) {
@@ -187,86 +205,103 @@ function App() {
   return (
     <div className="app">
       <Navigation />
-
-      <main className="main">
-        {showWelcome ? (
-          <div className="welcome-section">
-            <div className="welcome-content">
-              <h1>Welcome to BestPRICE</h1>
-              <p>Find the best prices across multiple sources. Compare prices, track history, and make informed purchasing decisions.</p>
-              <div className="welcome-features">
-                <div className="feature">
-                  <Search className="feature-icon" />
-                  <span>Smart Search</span>
+      
+      <div className="app-layout">
+        <Sidebar 
+          onWatchlistClick={handleWatchlistClick}
+          onSearchClick={handleSearchClick}
+          currentView={currentView}
+        />
+        
+        <main className="main-content">
+          {showWelcome ? (
+            <div className="welcome-section">
+              <div className="welcome-content">
+                <h1>Welcome to BestPRICE</h1>
+                <p>Find the best prices across multiple sources. Compare prices, track history, and make informed purchasing decisions.</p>
+                <div className="welcome-features">
+                  <div className="feature">
+                    <Search className="feature-icon" />
+                    <span>Smart Search</span>
+                  </div>
+                  <div className="feature">
+                    <TrendingUp className="feature-icon" />
+                    <span>Price Tracking</span>
+                  </div>
+                  <div className="feature">
+                    <Package className="feature-icon" />
+                    <span>Multiple Sources</span>
+                  </div>
                 </div>
-                <div className="feature">
-                  <TrendingUp className="feature-icon" />
-                  <span>Price Tracking</span>
-                </div>
-                <div className="feature">
-                  <Package className="feature-icon" />
-                  <span>Multiple Sources</span>
-                </div>
+                <button className="get-started-button" onClick={handleGetStarted}>
+                  Get Started
+                </button>
               </div>
-              <button className="get-started-button" onClick={handleGetStarted}>
-                Get Started
-              </button>
             </div>
-          </div>
-        ) : (
-          <ProtectedRoute>
-            <SearchForm onSearch={handleSearch} loading={loading} />
-            
-            {error && (
-              <div className="error-message">
-                <p>{error}</p>
-              </div>
-            )}
+          ) : (
+            <ProtectedRoute>
+              {currentView === 'search' ? (
+                <>
+                  <SearchForm onSearch={handleSearch} loading={loading} />
+                  
+                  {error && (
+                    <div className="error-message">
+                      <p>{error}</p>
+                    </div>
+                  )}
 
-            {currentSearch && (
-              <div className="search-results">
-                <OffersGrid 
-                  offers={offers}
-                  loading={loading}
-                  pagination={pagination}
-                  onOfferClick={handleOfferClick}
-                  onFiltersChange={(filters) => fetchOffers(currentSearch.id, filters)}
-                  onPageChange={handlePageChange}
-                />
-              </div>
-            )}
+                  {currentSearch && (
+                    <div className="search-results">
+                      <OffersGrid 
+                        offers={offers}
+                        loading={loading}
+                        pagination={pagination}
+                        onOfferClick={handleOfferClick}
+                        onFiltersChange={(filters) => fetchOffers(currentSearch.id, filters)}
+                        onPageChange={handlePageChange}
+                      />
+                    </div>
+                  )}
 
-            {showPriceHistory && selectedOffer && (
-              <PriceHistoryModal
-                offer={selectedOffer}
-                onClose={handleClosePriceHistory}
+                  {showPriceHistory && selectedOffer && (
+                    <PriceHistoryModal
+                      offer={selectedOffer}
+                      onClose={handleClosePriceHistory}
+                    />
+                  )}
+                </>
+              ) : (
+                <WatchlistView />
+              )}
+            </ProtectedRoute>
+          )}
+        </main>
+      </div>
+
+
+      {/* Authentication Modal */}
+      {showAuthModal && (
+        <div className="modal-overlay">
+          <div className="auth-modal">
+            <button className="auth-modal-close" onClick={handleCloseAuthModal}>
+              <X size={24} />
+            </button>
+            {authMode === 'login' ? (
+              <Login 
+                onSwitchToRegister={handleSwitchAuthMode}
+                onClose={handleCloseAuthModal}
+                onSuccess={handleAuthSuccess}
+              />
+            ) : (
+              <Register 
+                onSwitchToLogin={handleSwitchAuthMode}
+                onClose={handleCloseAuthModal}
+                onSuccess={handleAuthSuccess}
               />
             )}
-          </ProtectedRoute>
-        )}
-
-        {/* Authentication Modal */}
-        {showAuthModal && (
-          <div className="modal-overlay">
-            <div className="auth-modal">
-              <button className="auth-modal-close" onClick={handleCloseAuthModal}>
-                <X size={24} />
-              </button>
-              {authMode === 'login' ? (
-                <Login 
-                  onSwitchToRegister={handleSwitchAuthMode}
-                  onClose={handleCloseAuthModal}
-                />
-              ) : (
-                <Register 
-                  onSwitchToLogin={handleSwitchAuthMode}
-                  onClose={handleCloseAuthModal}
-                />
-              )}
-            </div>
           </div>
-        )}
-      </main>
+        </div>
+      )}
     </div>
   )
 }

@@ -35,7 +35,6 @@ class UserWatchlist(Base):
     source = Column(String(50), nullable=True)                                 # ebay, amazon, etc.
     product_image_url = Column(Text, nullable=True)                            # product image
     
-    is_active = Column(Boolean, default=True)                                  # can be disabled without deleting
     created_at = Column(DateTime(timezone=True), server_default=func.now())    # when added to watchlist
     
     # Relationships

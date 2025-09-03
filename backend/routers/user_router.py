@@ -51,17 +51,12 @@ async def add_to_watchlist(
     """
     Add item to current user's watchlist
     """
-    try:
-        # Add item to current user's watchlist and save to DB
-        watchlist_item = await user_service.add_to_watchlist(current_user_id, watchlist_data, session)
-        await session.commit()
-        return WatchlistItemResponse.from_orm(watchlist_item)
-    except (ValidationError, NotFoundError) as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    watchlist_item = await user_service.add_to_watchlist(current_user_id, watchlist_data, session)
+    return WatchlistItemResponse.from_orm(watchlist_item)
 
-@router.delete("/watchlist/{item_id}")
+@router.delete("/watchlist/{offer_id}")
 async def remove_from_watchlist(
-    item_id: int,
+    offer_id: int,
     session: AsyncSession = Depends(get_session),
     user_service: UserService = Depends(get_user_service),
     current_user_id: int = Depends(require_current_user_id)
@@ -69,13 +64,8 @@ async def remove_from_watchlist(
     """
     Remove item from current user's watchlist
     """
-    try:
-        # Remove item from current user's watchlist and save to DB
-        await user_service.remove_from_watchlist(current_user_id, item_id, session)
-        await session.commit()
-        return {"message": "Item removed from watchlist"}
-    except NotFoundError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+    await user_service.remove_from_watchlist(current_user_id, offer_id, session)
+    return {"message": "Item removed from watchlist"}
 
 @router.get("/recent-searches", response_model=List[SearchResponse])
 async def get_user_recent_searches(

@@ -1,10 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Package } from 'lucide-react'
 import OfferCard from './OfferCard'
 import FiltersPanel from './FiltersPanel'
 import Pagination from './Pagination'
+import { useAuth } from '../contexts/AuthContext'
+import axios from 'axios'
 
 const OffersGrid = ({ offers, loading, pagination, onOfferClick, onFiltersChange, onPageChange }) => {
+  const { isAuthenticated, token } = useAuth()
+  const [userWatchlist, setUserWatchlist] = useState([])
+  const [watchlistLoading, setWatchlistLoading] = useState(false)
   const [filters, setFilters] = useState({
     page: 1,
     page_size: 20,
@@ -15,6 +20,50 @@ const OffersGrid = ({ offers, loading, pagination, onOfferClick, onFiltersChange
     source: '',
     min_rating: ''
   })
+
+  // Track if watchlist has been fetched to prevent duplicate calls
+  const watchlistFetched = useRef(false)
+  
+  // Fetch user watchlist once when component mounts or auth changes
+  useEffect(() => {
+    const fetchWatchlist = async () => {
+      if (!isAuthenticated || !token) {
+        setUserWatchlist([])
+        watchlistFetched.current = false
+        return
+      }
+      
+      // Prevent duplicate calls
+      if (watchlistFetched.current) return
+      
+      setWatchlistLoading(true)
+      watchlistFetched.current = true
+      
+      try {
+        const response = await axios.get('http://localhost:8000/user/watchlist', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        setUserWatchlist(response.data)
+      } catch (error) {
+        console.error('Error fetching watchlist:', error)
+        setUserWatchlist([])
+        watchlistFetched.current = false // Reset on error
+      } finally {
+        setWatchlistLoading(false)
+      }
+    }
+
+    fetchWatchlist()
+  }, [isAuthenticated, token])
+
+  const handleWatchlistUpdate = (offerId, isAdding, newItem = null) => {
+    // Update local state optimistically - no API call needed!
+    if (isAdding && newItem) {
+      setUserWatchlist(prev => [...prev, newItem])
+    } else {
+      setUserWatchlist(prev => prev.filter(item => item.offer_id !== offerId))
+    }
+  }
 
   const handleFiltersChange = (newFilters) => {
     const updatedFilters = { ...filters, ...newFilters, page: 1 } // Reset to page 1 when filters change
@@ -58,6 +107,8 @@ const OffersGrid = ({ offers, loading, pagination, onOfferClick, onFiltersChange
                 key={offer.id}
                 offer={offer}
                 onClick={() => onOfferClick(offer)}
+                userWatchlist={userWatchlist}
+                onWatchlistUpdate={handleWatchlistUpdate}
               />
             ))}
           </div>

@@ -29,13 +29,8 @@ async def register_user(
     """
     Register a new user account
     """
-    # Create user and return user response
-    try:
-        user = await user_service.create_user(user_data, session)
-        await session.commit()
-        return UserResponse.from_orm(user)
-    except ValidationError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    user = await user_service.create_user(user_data, session)
+    return UserResponse.from_orm(user)
 
 @router.post("/login", response_model=Token)
 async def login_user(

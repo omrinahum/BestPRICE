@@ -6,7 +6,13 @@ const FiltersPanel = ({ filters, onFiltersChange, offerCount }) => {
   const [localMax, setLocalMax] = useState(filters.max_price || '')
   const [localSource, setLocalSource] = useState(filters.source || '')
   const [localMinRating, setLocalMinRating] = useState(filters.min_rating || '')
-  const [collapsed, setCollapsed] = useState(true)
+  
+  // Persist filter panel state in localStorage
+  const [collapsed, setCollapsed] = useState(() => {
+    const saved = localStorage.getItem('filtersCollapsed')
+    return saved !== null ? JSON.parse(saved) : true
+  })
+  
   const debounceRef = useRef(null)
 
   // Sync from parent only when values actually differ to avoid loops
@@ -21,6 +27,11 @@ const FiltersPanel = ({ filters, onFiltersChange, offerCount }) => {
     if (minRatingFromProps !== localMinRating) setLocalMinRating(minRatingFromProps)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters.min_price, filters.max_price, filters.source, filters.min_rating])
+
+  // Save collapsed state to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('filtersCollapsed', JSON.stringify(collapsed))
+  }, [collapsed])
 
   // Debounce user typing; only fire when values changed vs current filters
   useEffect(() => {
@@ -41,7 +52,7 @@ const FiltersPanel = ({ filters, onFiltersChange, offerCount }) => {
         min_rating: localMinRating,
         page: 1 
       })
-    }, 800)
+    }, 1500)
     return () => clearTimeout(debounceRef.current)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localMin, localMax, localSource, localMinRating])

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { Mail, Lock, User, Eye, EyeOff, UserPlus } from 'lucide-react'
 
-const Register = ({ onSwitchToLogin, onClose }) => {
+const Register = ({ onSwitchToLogin, onClose, onSuccess }) => {
   const [formData, setFormData] = useState({
     fullName: '',
     username: '',
@@ -44,7 +44,7 @@ const Register = ({ onSwitchToLogin, onClose }) => {
     const result = await register(formData.username, formData.email, formData.password, formData.fullName)
     
     if (result.success) {
-      onClose()
+      onSuccess ? onSuccess() : onClose()
     } else {
       setError(result.error)
     }
