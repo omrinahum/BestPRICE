@@ -2,6 +2,7 @@
 """
 Service Layer - Contains business logic and orchestration
 """
+import asyncio
 from typing import Dict, List
 import logging
 from backend.schemas.search_schema import SearchCreate, SearchResponse
@@ -19,39 +20,53 @@ class SearchService:
 
     async def search_all_sources(self, query: str) -> Dict[str, List[dict]]:
         """
-        Search all external sources and return raw results
+        Search all external sources concurrently and return raw results
         """
-        results = {}
+        # Search ebay
+        async def search_ebay_safe():
+            try:
+                ebay_results = await search_ebay(query)
+                ebay_items = ebay_results.get("itemSummaries", [])
+                logging.info(f"eBay search successful: {len(ebay_items)} items")
+                return ('ebay', ebay_items)
+            except Exception as e:
+                logging.warning(f"eBay search failed (skipping): {e}")
+                return ('ebay', [])
 
-        # Search eBay (optional - skip if credentials not available)
-        try:
-            ebay_results = await search_ebay(query) 
-            ebay_items = ebay_results.get("itemSummaries", [])
-            results['ebay'] = ebay_items
-            logging.info(f"eBay search successful: {len(ebay_items)} items")
-        except Exception as e:
-            logging.warning(f"eBay search failed (skipping): {e}")
-            results['ebay'] = []
+        # Search dummyjson
+        async def search_dummyjson_safe():
+            try:
+                dummyjson_results = await search_dummyjson(query)
+                dummy_items = dummyjson_results.get("products", [])
+                dummyjson_results["items_filtered"] = dummy_items
+                logging.info(f"DummyJSON search successful: {len(dummy_items)} items")
+                return ('dummyjson', dummyjson_results)
+            except Exception as e:
+                logging.warning(f"DummyJSON search failed (skipping): {e}")
+                return ('dummyjson', [])
+        
+        # Search amazon
+        async def search_amazon_safe():
+            try:
+                amazon_results = await search_amazon(query)
+                logging.info(f"Amazon search successful: {len(amazon_results.get('products', []))} items")
+                return ('amazon', amazon_results)
+            except Exception as e:
+                logging.warning(f"Amazon search failed (skipping): {e}")
+                return ('amazon', {"products": []})
 
-        # Search DummyJSON
-        try:
-            dummyjson_results = await search_dummyjson(query) 
-            dummy_items = dummyjson_results.get("products", [])
-            dummyjson_results["items_filtered"] = dummy_items
-            results['dummyjson'] = dummyjson_results
-            logging.info(f"DummyJSON search successful: {len(dummy_items)} items")
-        except Exception as e:
-            logging.warning(f"DummyJSON search failed (skipping): {e}")
-            results['dummyjson'] = []
-
-        # Search Amazon
-        try:
-            amazon_results = await search_amazon(query)
-            results['amazon'] = amazon_results
-            logging.info(f"Amazon search successful: {len(amazon_results.get('products', []))} items")
-        except Exception as e:
-            logging.warning(f"Amazon search failed (skipping): {e}")
-            results['amazon'] = {"products": []}
+        # Run all searches concurrently
+        tasks = [
+            search_ebay_safe(),
+            search_dummyjson_safe(),
+            search_amazon_safe()
+        ]
+        
+        # Wait for all tasks to complete
+        results_list = await asyncio.gather(*tasks)
+        
+        # Convert list of tuples back to dict
+        results = dict(results_list)
         
         return results
 
