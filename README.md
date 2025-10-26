@@ -43,17 +43,25 @@ BestPRICE/
 └── frontend/              # React app
 ```
 
-## Setup
+## Setup & Running
 
 **Prerequisites:** Python 3.8+, Node.js 18+, eBay API credentials
 
-### Backend
+### 1. Clone and Navigate
+```bash
+git clone <repository-url>
+cd BestPRICE
+```
+
+### 2. Backend Setup
 
 ```bash
-# Create and activate virtual environment
+# Create virtual environment
 python -m venv venv
-venv\Scripts\activate  # Windows
-source venv/bin/activate  # Linux/macOS
+
+# Activate it
+venv\Scripts\activate              # Windows
+source venv/bin/activate           # Linux/macOS
 
 # Install dependencies
 pip install -r requirements.txt
@@ -62,7 +70,7 @@ pip install -r requirements.txt
 python backend/init_db.py
 ```
 
-Create `backend/.env`:
+Create `backend/.env` with your API credentials:
 ```env
 DATABASE_URL=sqlite:///./bestprice.db
 ASYNC_DATABASE_URL=sqlite+aiosqlite:///./bestprice.db
@@ -72,21 +80,23 @@ EBAY_CLIENT_SECRET=your_client_secret
 AMAZON_API_KEY=your_rapidapi_key  # Optional
 ```
 
-### Frontend
+### 3. Frontend Setup
 
 ```bash
 cd frontend
 npm install
+cd ..
 ```
 
-## Running the App
+### 4. Run the Application
 
-**Backend:**
+**Start Backend** (from project root):
 ```bash
+# Make sure venv is activated
 uvicorn backend.main:app --reload --port 8000
 ```
 
-**Frontend:**
+**Start Frontend** (new terminal):
 ```bash
 cd frontend
 npm run dev
@@ -94,6 +104,7 @@ npm run dev
 
 **Access:**
 - Frontend: http://localhost:5173
+- API: http://localhost:8000
 - API Docs: http://localhost:8000/docs
 
 ## API Endpoints
