@@ -115,12 +115,12 @@ function App() {
         page_size: responseData.pagination?.page_size || 20,
         total_count: responseData.pagination?.total_count || 0,
         total_pages: responseData.pagination?.total_pages || 0,
-        sort_by: filters.sort_by || pagination.sort_by || 'last_price',
-        sort_order: filters.sort_order || pagination.sort_order || 'asc',
-        min_price: filters.min_price || pagination.min_price || '',
-        max_price: filters.max_price || pagination.max_price || '',
-        source: filters.source || pagination.source || '',
-        min_rating: filters.min_rating || pagination.min_rating || ''
+        sort_by: filters.hasOwnProperty('sort_by') ? filters.sort_by : (pagination.sort_by || 'last_price'),
+        sort_order: filters.hasOwnProperty('sort_order') ? filters.sort_order : (pagination.sort_order || 'asc'),
+        min_price: filters.hasOwnProperty('min_price') ? filters.min_price : (pagination.min_price || ''),
+        max_price: filters.hasOwnProperty('max_price') ? filters.max_price : (pagination.max_price || ''),
+        source: filters.hasOwnProperty('source') ? filters.source : (pagination.source || ''),
+        min_rating: filters.hasOwnProperty('min_rating') ? filters.min_rating : (pagination.min_rating || '')
       })
     } catch (err) {
       console.error('Fetch offers error:', err)
@@ -135,12 +135,12 @@ function App() {
       // Preserve current sorting and filtering state when changing pages
       const currentFilters = {
         page: newPage,
-        sort_by: pagination.sort_by || 'last_price',
-        sort_order: pagination.sort_order || 'asc',
-        min_price: pagination.min_price || '',
-        max_price: pagination.max_price || '',
-        source: pagination.source || '',
-        min_rating: pagination.min_rating || ''
+        sort_by: pagination.sort_by,
+        sort_order: pagination.sort_order,
+        min_price: pagination.min_price,
+        max_price: pagination.max_price,
+        source: pagination.source,
+        min_rating: pagination.min_rating
       }
       fetchOffers(currentSearch.id, currentFilters)
     }

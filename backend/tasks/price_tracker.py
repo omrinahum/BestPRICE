@@ -44,40 +44,37 @@ async def fetch_current_price_from_api(offer: Offer) -> dict | None:
             results = await search_ebay(search_query)
             items = results.get('itemSummaries', [])
             
-            # Try to find the exact item by matching source_offer_id
+            # Only update if we find the exact item by source_offer_id
             for item in items:
                 if item.get('itemId') == offer.source_offer_id:
                     return ebay_to_offer(item)
             
-            # If not found by ID, use first result (best match)
-            if items:
-                return ebay_to_offer(items[0])
+            # Item not found - don't use a different item
+            return None
                 
         elif offer.source == 'dummyjson':
             results = await search_dummyjson(search_query)
             products = results.get('products', [])
             
-            # Try to find exact match
+            # Only update if we find exact match
             for product in products:
                 if str(product.get('id')) == offer.source_offer_id:
                     return dummyjson_to_offer(product)
             
-            # Use first result
-            if products:
-                return dummyjson_to_offer(products[0])
+            # Item not found
+            return None
                 
         elif offer.source == 'amazon':
             results = await search_amazon(search_query)
             products = results.get('products', [])
             
-            # Try to find exact match
+            # Only update if we find exact match
             for product in products:
                 if product.get('asin') == offer.source_offer_id:
                     return amazon_to_offer(product)
             
-            # Use first result
-            if products:
-                return amazon_to_offer(products[0])
+            # Item not found
+            return None
         
         return None
         
@@ -91,9 +88,8 @@ async def update_watchlist_prices():
     Main task to update prices for all watchlist items.
     This should be run daily via scheduler.
     """
-    logger.info("=" * 60)
     logger.info("Starting watchlist price update task")
-    logger.info("=" * 60)
+    
     
     async with async_engine.begin() as conn:
         async with AsyncSession(bind=conn, expire_on_commit=False) as session:
@@ -130,7 +126,7 @@ async def update_watchlist_prices():
                     updated_data = await fetch_current_price_from_api(offer)
                     
                     if not updated_data:
-                        logger.warning(f"  Could not fetch price from {offer.source}")
+                        logger.warning(f"  Item not found or unavailable on {offer.source} (skipping)")
                         failed_count += 1
                         continue
                     
@@ -151,7 +147,7 @@ async def update_watchlist_prices():
                         session.add(price_history)
                     else:
                         # Price changed - update offer and add to history
-                        logger.info(f"  Price changed: ${old_price} → ${new_price}")
+                        logger.info(f"  Price changed: {old_price} → {new_price}")
                         offer.last_price = new_price
                         offer.last_seen_at = datetime.utcnow()
                         
@@ -177,13 +173,11 @@ async def update_watchlist_prices():
             
             # Summary
             logger.info("")
-            logger.info("=" * 60)
-            logger.info("Price Update Summary")
-            logger.info("=" * 60)
-            logger.info(f"✓ Prices updated: {updated_count}")
-            logger.info(f"→ Prices unchanged: {unchanged_count}")
-            logger.info(f"✗ Failed: {failed_count}")
-            logger.info("=" * 60)
+            logger.info("Price Update Summary:")
+            logger.info(f"Prices updated: {updated_count}")
+            logger.info(f"Prices unchanged: {unchanged_count}")
+            logger.info(f"Failed: {failed_count}")
+            
 
 
 async def main():

@@ -71,15 +71,6 @@ const OffersGrid = ({ offers, loading, pagination, onOfferClick, onFiltersChange
     onFiltersChange(updatedFilters)
   }
 
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <div className="loading-spinner"></div>
-        <p>Loading offers...</p>
-      </div>
-    )
-  }
-
   return (
     <div className="offers-section">
       <FiltersPanel 

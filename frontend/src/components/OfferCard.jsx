@@ -93,7 +93,7 @@ const OfferCard = ({ offer, onClick, userWatchlist, onWatchlistUpdate }) => {
 
         <div className="offer-price">
           <span className="price-amount">
-            {offer.currency} {parseFloat(offer.last_price).toFixed(2)}
+            {parseFloat(offer.last_price).toFixed(2)} <span className="currency">{offer.currency}</span>
           </span>
         </div>
 
