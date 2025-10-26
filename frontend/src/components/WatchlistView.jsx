@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import OfferCard from './OfferCard';
+import PriceHistoryModal from './PriceHistoryModal';
 
 const WatchlistView = () => {
   const [watchlistItems, setWatchlistItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedOffer, setSelectedOffer] = useState(null);
+  const [showPriceHistory, setShowPriceHistory] = useState(false);
   const { token } = useAuth();
 
   useEffect(() => {
@@ -83,10 +86,21 @@ const WatchlistView = () => {
     title: item.product_title,
     url: item.product_url,
     last_price: item.current_price,
+    currency: item.currency || 'USD',
     source: item.source,
     image_url: item.product_image_url,
     created_at: item.created_at
   });
+
+  const handleOfferClick = (offer) => {
+    setSelectedOffer(offer);
+    setShowPriceHistory(true);
+  };
+
+  const handleClosePriceHistory = () => {
+    setShowPriceHistory(false);
+    setSelectedOffer(null);
+  };
 
   return (
     <div className="main">
@@ -111,9 +125,17 @@ const WatchlistView = () => {
               offer={convertToOfferFormat(item)}
               userWatchlist={watchlistItems}
               onWatchlistUpdate={handleWatchlistUpdate}
+              onClick={handleOfferClick}
             />
           ))}
         </div>
+      )}
+
+      {showPriceHistory && selectedOffer && (
+        <PriceHistoryModal
+          offer={selectedOffer}
+          onClose={handleClosePriceHistory}
+        />
       )}
     </div>
   );

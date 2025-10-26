@@ -8,14 +8,17 @@ Price comparison platform with real-time data aggregation from Amazon, Ebay and 
 - **Intelligent Caching**: OAuth2 token caching with automatic refresh (2-hour expiry)
 - **Async Processing**: Non-blocking I/O operations for optimal performance
 - **Advanced Filtering**: Price range, source, and rating-based filtering
-- **Price History Tracking**: Historical price data with trend analysis
+- **Price History Tracking**: Historical price data with trend analysis and visualization
+- **Automated Price Polling**: Daily background tasks to track watchlist item prices
+- **User Watchlists**: Track and monitor specific items with price alerts
 - **Cross-Platform Compatibility**: Windows, Linux, macOS support
 
 ## Architecture Highlights
 
 - **Clean Architecture**: Separation of concerns with adapters, services, and repositories
 - **Database Abstraction**: SQLAlchemy ORM with async support
-- **API Rate Limiting**: Respectful external API usage
+- **Background Task Scheduling**: APScheduler for automated price tracking
+- **API Rate Limiting**: Respectful external API usage with request throttling
 - **Type Safety**: Pydantic models for data validation
 - **Comprehensive Testing**: Unit, integration, and adapter tests
 
@@ -30,23 +33,34 @@ BestPRICE/
 │   │   └── dummyjson_adapter.py
 │   ├── models/             # Database models
 │   │   ├── offers.py
-│   │   └── pricehistory.py
+│   │   ├── pricehistory.py
+│   │   └── users.py
 │   ├── routers/            # API endpoints
 │   │   ├── search_router.py
-│   │   └── offer_router.py
+│   │   ├── offer_router.py
+│   │   └── user_router.py
 │   ├── services/           # Business logic
 │   │   ├── offer_service.py
-│   │   ├── data_transformation_service.py
-│   │   └── ebay_auth.py
+│   │   ├── pricehistory_service.py
+│   │   └── data_transformation_service.py
+│   ├── tasks/              # Background tasks
+│   │   └── price_tracker.py
 │   ├── repositories/       # Data access layer
 │   ├── utils/              # Helper functions
+│   ├── scheduler.py        # Task scheduler
 │   └── main.py             # FastAPI application
+├── scripts/                # Utility scripts
+│   ├── generate_price_history.py
+│   └── test_price_polling.py
 ├── tests/                  # Comprehensive test suite
 │   ├── test_adapters/
 │   ├── test_services/
 │   ├── test_integration/
 │   └── test_repository/
-├── frontend/               # React frontend (planned)
+├── frontend/               # React frontend
+│   └── src/
+│       └── components/
+│           └── PriceHistoryModal.jsx
 └── requirements.txt
 ```
 
@@ -127,6 +141,13 @@ npm run dev
 - `GET /offers?search_id={id}` - Get offers (supports filtering: min_price, max_price, source, min_rating)
 - `GET /offers/price/{offer_id}` - Price history
 
+**User:**
+- `POST /auth/register` - User registration
+- `POST /auth/login` - User authentication
+- `GET /user/watchlist` - Get user watchlist
+- `POST /user/watchlist` - Add item to watchlist
+- `DELETE /user/watchlist/{offer_id}` - Remove from watchlist
+
 **Health:**
 - `GET /health` - Status check
 
@@ -170,14 +191,17 @@ pytest --cov=backend --cov-report=html
 **Backend:**
 - FastAPI (async web framework)
 - SQLAlchemy (ORM with async support)
+- APScheduler (background task scheduling)
 - Pydantic (data validation)
 - aiosqlite (async SQLite driver)
 - httpx (async HTTP client)
 - pytest (testing framework)
 
 **Frontend:**
-- React 18+ 
-- Vite as a build tool
+- React 18+
+- Recharts (price visualization)
+- Vite (build tool)
+- Lucide React (icons)
 
 **External APIs:**
 - eBay Browse API (OAuth2)
@@ -192,5 +216,36 @@ pytest --cov=backend --cov-report=html
 - **Search Caching**: Reduces API calls overhead
 - **Parallel Processing**: Concurrent external API calls
 - **Database Indexing**: Optimized queries on price, source, date fields
+- **Scheduled Background Tasks**: Automated price updates with minimal overhead
+
+## Price History & Tracking
+
+### Automated Price Polling
+
+The system includes automated price tracking for watchlist items. A background scheduler polls external APIs daily to update price history.
+
+**Configuration:**
+- Runs daily at 2:00 AM
+- Tracks only watchlist items (efficient resource usage)
+
+**Manual Testing:**
+```bash
+python scripts/test_price_polling.py
+```
+
+### Generating Historical Data
+
+For demonstration purposes, synthetic historical price data can be generated for watchlist items.
+
+**Generate 60 days of price history:**
+```bash
+python scripts/generate_price_history.py
+```
+
+### Price History Visualization
+
+The frontend includes interactive price history graphs powered by Recharts
+
+**Access:** Click the history button on any watchlist item to view the price trend graph.
 
 

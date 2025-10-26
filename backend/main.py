@@ -2,11 +2,29 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 
 from backend.routers import search_router, offer_router, auth_router, user_router
 from backend.utils.error import ValidationError, NotFoundError, ExternalAPIError
+from backend.scheduler import start_scheduler, stop_scheduler
 
-app = FastAPI()
+# Global scheduler instance
+scheduler = None
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Lifespan context manager for startup and shutdown events.
+    Starts the background scheduler on startup and stops it on shutdown.
+    """
+    global scheduler
+    # Startup: Start the scheduler
+    scheduler = start_scheduler()
+    yield
+    # Shutdown: Stop the scheduler
+    stop_scheduler(scheduler)
+
+app = FastAPI(lifespan=lifespan)
 
 # CORS middleware
 app.add_middleware(

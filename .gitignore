@@ -23,6 +23,9 @@ bestprice.db
 .vscode/
 .history/
 
+# Cursor IDE
+.cursorrules
+
 # OS files
 .DS_Store
 Thumbs.db
