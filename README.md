@@ -49,7 +49,7 @@ BestPRICE/
 
 ### 1. Clone and Navigate
 ```bash
-git clone <repository-url>
+git clone https://github.com/omrinahum/BestPRICE
 cd BestPRICE
 ```
 
