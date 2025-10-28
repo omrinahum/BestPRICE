@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Heart, Search, Menu, X } from 'lucide-react';
+import { Heart, Search, Menu, X, TrendingUp } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
-const Sidebar = ({ onWatchlistClick, onSearchClick, currentView }) => {
+const Sidebar = ({ onWatchlistClick, onSearchClick, onBestDealsClick, currentView }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const { user, isAuthenticated } = useAuth();
 
@@ -43,6 +43,17 @@ const Sidebar = ({ onWatchlistClick, onSearchClick, currentView }) => {
               >
                 <Search size={20} />
                 {!isCollapsed && <span>Search</span>}
+              </button>
+            </li>
+            
+            <li className="nav-item">
+              <button 
+                className={`nav-link ${currentView === 'best-deals' ? 'active' : ''}`}
+                onClick={onBestDealsClick}
+                title="Best Deals"
+              >
+                <TrendingUp size={20} />
+                {!isCollapsed && <span>Best Deals</span>}
               </button>
             </li>
             

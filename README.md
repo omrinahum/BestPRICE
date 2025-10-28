@@ -7,6 +7,7 @@ A price comparison platform that aggregates product data from multiple sources (
 - Multi-source product search (eBay, Amazon, DummyJSON)
 - Price history tracking with interactive graphs
 - User watchlists with automated daily price updates
+- **Best Deals page** - algorithmically identifies top deals from recent searches based on price analysis and ratings
 - OAuth2 token caching for eBay API
 - Async processing for better performance
 - Price filtering and sorting
@@ -116,6 +117,9 @@ npm run dev
 **Offers**
 - `GET /offers?search_id={id}` - Get offers (supports min_price, max_price, source filters)
 - `GET /offers/price/{offer_id}` - Get price history
+
+**Deals**
+- `GET /deals/recent` - Get best deals from last 48 hours (limit, hours params)
 
 **User**
 - `POST /auth/register` - Register

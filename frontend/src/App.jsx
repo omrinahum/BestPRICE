@@ -9,6 +9,7 @@ import Register from './components/Register'
 import ProtectedRoute from './components/ProtectedRoute'
 import Sidebar from './components/Sidebar'
 import WatchlistView from './components/WatchlistView'
+import BestDealsPage from './components/BestDealsPage'
 import { useAuth } from './contexts/AuthContext'
 import { Search, Package, TrendingUp, X } from 'lucide-react'
 
@@ -29,7 +30,7 @@ function App() {
   const [showWelcome, setShowWelcome] = useState(true)
   const [showAuthModal, setShowAuthModal] = useState(false)
   const [authMode, setAuthMode] = useState('login') // 'login' or 'register'
-  const [currentView, setCurrentView] = useState('search') // 'search' or 'watchlist'
+  const [currentView, setCurrentView] = useState('search') // 'search', 'watchlist', or 'best-deals'
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   const handleSearch = async (searchData) => {
@@ -191,6 +192,11 @@ function App() {
     setCurrentView('search')
   }
 
+  const handleBestDealsClick = () => {
+    setCurrentView('best-deals')
+    setShowWelcome(false)
+  }
+
   if (authLoading) {
     return (
       <div className="app">
@@ -210,6 +216,7 @@ function App() {
         <Sidebar 
           onWatchlistClick={handleWatchlistClick}
           onSearchClick={handleSearchClick}
+          onBestDealsClick={handleBestDealsClick}
           currentView={currentView}
         />
         
@@ -270,8 +277,10 @@ function App() {
                     />
                   )}
                 </>
-              ) : (
+              ) : currentView === 'watchlist' ? (
                 <WatchlistView />
+              ) : (
+                <BestDealsPage />
               )}
             </ProtectedRoute>
           )}

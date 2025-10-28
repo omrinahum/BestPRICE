@@ -5,21 +5,18 @@
   box-sizing: border-box;
 }
 
-/* Airy neutral background with darker blue tone */
+/* Clean, luxurious background */
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fbfdff;
-  background-image:
-    radial-gradient(1100px at 20% 10%, rgba(173, 238, 226, 0.24) 0%, rgba(173, 238, 226, 0) 58%),
-    radial-gradient(1200px at 85% 90%, rgba(162, 185, 238, 0.42) 0%, rgba(162, 185, 238, 0) 74%),
-    linear-gradient(135deg, rgba(237, 244, 255, 1) 0%, rgba(230, 240, 255, 1) 100%);
-  color: var(--bp-text);
+  background: linear-gradient(to bottom, #f8fafb 0%, #ffffff 100%);
+  color: #1a1a1a;
   line-height: 1.6;
   min-height: 100vh;
+  letter-spacing: -0.01em;
 }
 
 .app {
@@ -39,19 +36,18 @@ body {
   transition: none;
 }
 
-/* Header: Sharp minimal design with green gradient */
+/* Header: Luxurious minimal design with subtle teal accent */
 .header {
   background: linear-gradient(
-    180deg,
-    rgba(173, 238, 226, 0.68) 0%,
-    rgba(173, 238, 226, 0.42) 55%,
-    rgba(173, 238, 226, 0.2) 100%
+    to bottom,
+    rgba(240, 253, 250, 0.98) 0%,
+    rgba(255, 255, 255, 0.95) 100%
   );
-  backdrop-filter: blur(10px);
-  color: #0e5f58;
-  padding: 0.75rem 0;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
-  border-bottom: 1px solid rgba(173, 238, 226, 0.32);
+  backdrop-filter: blur(20px);
+  color: #1a1a1a;
+  padding: 1rem 0;
+  box-shadow: 0 1px 3px rgba(14, 95, 88, 0.06), 0 1px 2px rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid rgba(14, 95, 88, 0.08);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -86,13 +82,12 @@ body {
 .logo h1 {
   font-size: 1.8rem;
   font-weight: 700;
-  letter-spacing: -0.5px;
+  letter-spacing: -1px;
   margin: 0;
-  background: linear-gradient(135deg, #6d88d8 0%, #445fbf 55%, #2f3f98 100%);
+  background: linear-gradient(135deg, #0e5f58 0%, #1a8f7e 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-shadow: 0 2px 12px rgba(47, 63, 152, 0.18);
 }
 
 .header-right {
@@ -273,25 +268,31 @@ body {
 
 /* Search form */
 .search-form {
+  margin-top: 3rem;
   margin-bottom: 3rem;
 }
 
 .search-input-group {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
   overflow: hidden;
-  max-width: 600px;
+  max-width: 700px;
   margin: 0 auto;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1.5px solid rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+
+.search-input-group:focus-within {
+  border-color: #0e5f58;
+  box-shadow: 0 4px 12px rgba(14, 95, 88, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 .search-input-icon {
   padding: 0 1.5rem;
-  color: #667eea;
+  color: #6b7280;
   width: 1.5rem;
   height: 1.5rem;
 }
@@ -303,31 +304,32 @@ body {
   font-size: 1rem;
   outline: none;
   background: transparent;
-  color: #1e293b;
+  color: #1a1a1a;
+  font-weight: 400;
 }
 
 .search-input::placeholder {
-  color: #94a3b8;
+  color: #9ca3af;
 }
 
 .search-button {
-  background: linear-gradient(135deg, var(--bp-primary) 0%, var(--bp-primary-strong) 100%);
-  color: #0b1a34;
+  background: #0e5f58;
+  color: white;
   border: none;
-  padding: 1.25rem 2rem;
-  font-size: 1rem;
+  padding: 1.25rem 2.5rem;
+  font-size: 0.95rem;
   font-weight: 600;
+  letter-spacing: 0.3px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .search-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  background: #0a4a44;
 }
 
 .search-button:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -352,12 +354,10 @@ body {
 .filters-panel {
   margin: 1.5rem auto 2rem;
   padding: 0;
-  background: #ffffff;
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  border-radius: 16px;
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.04),
-    0 1px 2px rgba(0, 0, 0, 0.06);
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   max-width: 1200px;
   overflow: hidden;
 }
@@ -576,15 +576,13 @@ body {
 /* Offer card */
 /* Ensure offer cards stack content and keep actions at bottom */
 .offer-card {
-  background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.04),
-    0 1px 2px rgba(0, 0, 0, 0.06);
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -599,11 +597,9 @@ body {
 }
 
 .offer-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 
-    0 12px 32px rgba(0, 0, 0, 0.08),
-    0 4px 8px rgba(0, 0, 0, 0.06);
-  border-color: rgba(203, 213, 225, 1);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-color: rgba(14, 95, 88, 0.2);
 }
 
 .offer-image {
@@ -2132,4 +2128,430 @@ body {
 .price-change.decrease {
   background-color: #d4edda;
   color: #155724;
+}
+
+/* ==========================================
+   BEST DEALS PAGE STYLES
+   ========================================== */
+
+.best-deals-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.best-deals-header {
+  margin-bottom: 2rem;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 53, 0.08) 0%,
+    rgba(255, 193, 7, 0.05) 50%,
+    rgba(255, 235, 238, 0.03) 100%
+  );
+  border-radius: 16px;
+  padding: 1rem 2rem 1.75rem 1.5rem;
+  border: 1px solid rgba(255, 107, 53, 0.1);
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.08);
+}
+
+.best-deals-header .header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.best-deals-header .header-title-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.best-deals-header .fire-emoji {
+  font-size: 2.5rem;
+  line-height: 1;
+  animation: fireFlicker 2s ease-in-out infinite;
+  filter: drop-shadow(0 2px 8px rgba(255, 107, 53, 0.3));
+}
+
+@keyframes fireFlicker {
+  0%, 100% { 
+    transform: scale(1) rotate(-2deg);
+    filter: drop-shadow(0 2px 8px rgba(255, 107, 53, 0.3));
+  }
+  50% { 
+    transform: scale(1.1) rotate(2deg);
+    filter: drop-shadow(0 4px 12px rgba(255, 107, 53, 0.5));
+  }
+}
+
+.best-deals-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ff6b35 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 10px rgba(255, 107, 53, 0.1);
+}
+
+.best-deals-header .header-subtitle {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0.375rem 0 0 0;
+  font-weight: 500;
+}
+
+.refresh-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #0e5f58 0%, #0a4a44 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(14, 95, 88, 0.2);
+}
+
+.refresh-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(14, 95, 88, 0.3);
+}
+
+.refresh-button:active {
+  transform: translateY(0);
+}
+
+/* Deals Grid */
+.deals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.deal-card-wrapper {
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.deal-card-wrapper:hover {
+  transform: translateY(-5px);
+}
+
+.deal-badge {
+  position: absolute;
+  top: 0.875rem;
+  right: 0.875rem;
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+  z-index: 10;
+  pointer-events: none;
+  letter-spacing: 0.5px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
+  }
+}
+
+/* Empty State */
+.best-deals-page .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  min-height: 400px;
+}
+
+.best-deals-page .empty-state .empty-icon {
+  color: #cbd5e1;
+  margin-bottom: 1.5rem;
+}
+
+.best-deals-page .empty-state h2 {
+  font-size: 1.75rem;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+}
+
+.best-deals-page .empty-state p {
+  font-size: 1rem;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  max-width: 500px;
+}
+
+/* Error State */
+.best-deals-page .error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  min-height: 400px;
+}
+
+.best-deals-page .error-state h2 {
+  font-size: 1.75rem;
+  color: #dc2626;
+  margin-bottom: 0.75rem;
+}
+
+.best-deals-page .error-state p {
+  font-size: 1rem;
+  color: #64748b;
+  margin-bottom: 1.5rem;
+}
+
+.retry-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+}
+
+.retry-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+/* Loading State */
+.best-deals-page .loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  min-height: 400px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .best-deals-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .best-deals-header {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .best-deals-header .fire-emoji {
+    font-size: 2.25rem;
+  }
+
+  .best-deals-header h1 {
+    font-size: 1.85rem;
+  }
+
+  .best-deals-header .header-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .best-deals-header .header-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .refresh-button {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .deals-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .deal-badge {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+/* ==========================================
+   WATCHLIST PAGE STYLES
+   ========================================== */
+
+.watchlist-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.watchlist-header {
+  margin-bottom: 2rem;
+  background: linear-gradient(
+    135deg,
+    rgba(219, 39, 119, 0.06) 0%,
+    rgba(244, 114, 182, 0.04) 50%,
+    rgba(251, 207, 232, 0.02) 100%
+  );
+  border-radius: 16px;
+  padding: 1.75rem 2rem 1.75rem 2.5rem;
+  border: 1px solid rgba(219, 39, 119, 0.08);
+  box-shadow: 0 4px 20px rgba(219, 39, 119, 0.06);
+}
+
+.watchlist-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+
+.watchlist-title-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.watchlist-icon {
+  color: #db2777;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 6px rgba(219, 39, 119, 0.25));
+  animation: heartPulse 2s ease-in-out infinite;
+}
+
+@keyframes heartPulse {
+  0%, 100% { 
+    transform: scale(1);
+    filter: drop-shadow(0 2px 6px rgba(219, 39, 119, 0.25));
+  }
+  50% { 
+    transform: scale(1.08);
+    filter: drop-shadow(0 3px 10px rgba(219, 39, 119, 0.4));
+  }
+}
+
+.watchlist-header h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #be185d 0%, #db2777 50%, #be185d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 10px rgba(190, 24, 93, 0.08);
+}
+
+.watchlist-subtitle {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0.375rem 0 0 0;
+  font-weight: 500;
+}
+
+.watchlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.watchlist-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem;
+  text-align: center;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.empty-heart-icon {
+  color: #e5e7eb;
+  margin-bottom: 1.5rem;
+  opacity: 0.7;
+}
+
+.watchlist-empty-state h2 {
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.watchlist-empty-state p {
+  font-size: 1rem;
+  color: #6b7280;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .watchlist-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .watchlist-header {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .watchlist-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .watchlist-header h1 {
+    font-size: 1.85rem;
+  }
+
+  .watchlist-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .watchlist-header-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .watchlist-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 }

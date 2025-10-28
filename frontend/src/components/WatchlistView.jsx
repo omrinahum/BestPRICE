@@ -103,22 +103,29 @@ const WatchlistView = () => {
   };
 
   return (
-    <div className="main">
-      <div className="section-header">
-        <h2>My Watchlist</h2>
-        <p className="section-subtitle">
-          {watchlistItems.length} {watchlistItems.length === 1 ? 'item' : 'items'} saved
-        </p>
+    <div className="watchlist-page">
+      <div className="watchlist-header">
+        <div className="watchlist-header-content">
+          <div className="watchlist-title-section">
+            <Heart size={40} className="watchlist-icon" fill="currentColor" />
+            <div>
+              <h1>My Watchlist</h1>
+              <p className="watchlist-subtitle">
+                {watchlistItems.length} {watchlistItems.length === 1 ? 'item' : 'items'} saved
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {watchlistItems.length === 0 ? (
-        <div className="empty-state">
-          <Heart size={48} />
-          <h3>Your watchlist is empty</h3>
-          <p>Start adding items to your watchlist to track prices and availability.</p>
+        <div className="watchlist-empty-state">
+          <Heart size={64} className="empty-heart-icon" />
+          <h2>Your watchlist is empty</h2>
+          <p>Start adding items to your watchlist to track prices and get notified of deals.</p>
         </div>
       ) : (
-        <div className="offers-grid">
+        <div className="watchlist-grid">
           {watchlistItems.map((item) => (
             <OfferCard
               key={item.id}

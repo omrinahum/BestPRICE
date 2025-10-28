@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
-from backend.routers import search_router, offer_router, auth_router, user_router
+from backend.routers import search_router, offer_router, auth_router, user_router, deals_router
 from backend.utils.error import ValidationError, NotFoundError, ExternalAPIError
 from backend.scheduler import start_scheduler, stop_scheduler
 
@@ -57,4 +57,5 @@ app.include_router(search_router.router, prefix="/search", tags=["search"])
 app.include_router(offer_router.router, prefix="/offers", tags=["offers"])
 app.include_router(auth_router.router, prefix="/auth", tags=["authentication"])
 app.include_router(user_router.router, prefix="/user", tags=["user"])
+app.include_router(deals_router.router, prefix="/deals", tags=["deals"])
 
