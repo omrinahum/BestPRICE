@@ -1,0 +1,697 @@
+/* ==========================================
+   PAGE-SPECIFIC STYLES
+   ========================================== */
+
+/* ==========================================
+   WELCOME SECTION - Modern "Hello" Style
+   ========================================== */
+
+.welcome-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 80px);
+  margin: -2rem -3rem;
+  padding: 1.5rem;
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, 
+    #f8fafb 0%, 
+    #f0f4f8 50%, 
+    #f8fafb 100%
+  );
+}
+
+/* Decorative diagonal lines */
+.welcome-section::before,
+.welcome-section::after {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(162, 185, 238, 0.15) 20%, 
+    rgba(173, 238, 226, 0.2) 50%, 
+    rgba(154, 156, 234, 0.15) 80%, 
+    transparent 100%
+  );
+  transform-origin: center;
+  animation: rotateLine 20s linear infinite;
+}
+
+.welcome-section::before {
+  top: 15%;
+  left: -50%;
+  transform: rotate(-12deg);
+  animation-delay: 0s;
+}
+
+.welcome-section::after {
+  bottom: 20%;
+  right: -50%;
+  transform: rotate(8deg);
+  animation-delay: -10s;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(154, 156, 234, 0.18) 20%, 
+    rgba(162, 185, 238, 0.2) 50%, 
+    rgba(173, 238, 226, 0.18) 80%, 
+    transparent 100%
+  );
+}
+
+/* Add more decorative lines */
+.welcome-content::before,
+.welcome-content::after {
+  content: '';
+  position: absolute;
+  width: 150%;
+  height: 1.5px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.welcome-content::before {
+  top: 25%;
+  left: -25%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(173, 238, 226, 0.12) 30%, 
+    rgba(162, 185, 238, 0.15) 50%, 
+    rgba(173, 238, 226, 0.12) 70%, 
+    transparent 100%
+  );
+  transform: rotate(-8deg);
+  animation: floatLine1 15s ease-in-out infinite;
+}
+
+.welcome-content::after {
+  bottom: 30%;
+  right: -25%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(154, 156, 234, 0.14) 30%, 
+    rgba(162, 185, 238, 0.16) 50%, 
+    rgba(154, 156, 234, 0.14) 70%, 
+    transparent 100%
+  );
+  transform: rotate(10deg);
+  animation: floatLine2 18s ease-in-out infinite;
+}
+
+.welcome-content {
+  position: relative;
+  background: transparent;
+  backdrop-filter: none;
+  border-radius: 0;
+  padding: 1rem 2rem;
+  text-align: center;
+  box-shadow: none;
+  border: none;
+  max-width: 680px;
+  width: 100%;
+  z-index: 1;
+}
+
+.welcome-content h1 {
+  font-size: 2.75rem;
+  font-weight: 800;
+  margin-bottom: 0.875rem;
+  background: linear-gradient(135deg,
+    #667eea 0%,
+    #764ba2 25%,
+    #667eea 50%,
+    #14b8a6 75%,
+    #3b82f6 100%
+  );
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 8s ease infinite;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+  text-shadow: none;
+  filter: drop-shadow(0 2px 8px rgba(102, 126, 234, 0.2));
+}
+
+.welcome-content p {
+  font-size: 1rem;
+  color: #64748b;
+  font-weight: 400;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  text-shadow: none;
+}
+
+.welcome-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.875rem;
+  margin-bottom: 1.75rem;
+  align-items: stretch;
+}
+
+.feature {
+  position: relative;
+  min-height: 88px;
+  padding: 0.875rem 0.75rem;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 
+    0 4px 16px rgba(16, 24, 40, 0.08),
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px) saturate(150%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature:hover {
+  transform: translateY(-3px);
+  box-shadow: 
+    0 8px 24px rgba(16, 24, 40, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+.feature:nth-child(1) {
+  background: linear-gradient(135deg, 
+    rgba(162, 185, 238, 0.35) 0%, 
+    rgba(139, 166, 232, 0.25) 100%
+  );
+}
+
+.feature:nth-child(2) {
+  background: linear-gradient(135deg, 
+    rgba(173, 238, 226, 0.35) 0%, 
+    rgba(153, 228, 216, 0.25) 100%
+  );
+}
+
+.feature:nth-child(3) {
+  background: linear-gradient(135deg,
+    rgba(154, 156, 234, 0.35) 0%,
+    rgba(134, 136, 214, 0.25) 100%
+  );
+}
+
+.feature span {
+  font-weight: 700;
+  color: #1e293b;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  letter-spacing: -0.2px;
+  text-shadow: none;
+}
+
+.feature .feature-icon {
+  width: 28px;
+  height: 28px;
+  opacity: 0.85;
+  color: #475569;
+  transition: all 0.3s ease;
+  filter: none;
+}
+
+.feature:hover .feature-icon {
+  opacity: 1;
+  transform: scale(1.08);
+}
+
+.get-started-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg,
+    #667eea 0%,
+    #764ba2 50%,
+    #667eea 100%
+  );
+  background-size: 200% 200%;
+  color: #ffffff;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  padding: 0.875rem 2.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 6px 20px rgba(102, 126, 234, 0.35),
+    0 3px 10px rgba(118, 75, 162, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  margin-top: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.get-started-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    transparent 100%
+  );
+  transition: left 0.5s ease;
+}
+
+.get-started-button:hover::before {
+  left: 100%;
+}
+
+.get-started-button:hover {
+  transform: translateY(-2px);
+  background-position: 100% 50%;
+  box-shadow: 
+    0 10px 28px rgba(102, 126, 234, 0.45),
+    0 5px 14px rgba(118, 75, 162, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.get-started-button:active {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 6px 20px rgba(102, 126, 234, 0.4),
+    0 3px 10px rgba(118, 75, 162, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* ==========================================
+   BEST DEALS PAGE
+   ========================================== */
+
+.best-deals-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@media (min-width: 769px) {
+  .best-deals-page {
+    margin-left: 280px;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .sidebar.collapsed ~ * .best-deals-page {
+    margin-left: 80px;
+  }
+}
+
+.best-deals-header {
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(24px) saturate(180%);
+  border-radius: 20px;
+  padding: 1rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.06),
+    0 4px 16px rgba(255, 140, 66, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.best-deals-header .header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.best-deals-header .header-title-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.best-deals-header .fire-emoji {
+  font-size: 2.25rem;
+  line-height: 1;
+  animation: fireFlicker 2s ease-in-out infinite;
+  filter: drop-shadow(0 2px 8px rgba(255, 107, 53, 0.3));
+}
+
+.best-deals-header h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ff6b35 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: -0.5px;
+  filter: drop-shadow(0 2px 6px rgba(255, 107, 53, 0.15));
+}
+
+.best-deals-header .header-subtitle {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 0.25rem 0 0 0;
+  font-weight: 500;
+}
+
+.deals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 0;
+}
+
+.deal-card-wrapper {
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.deal-card-wrapper:hover {
+  transform: translateY(-5px);
+}
+
+.deal-badge {
+  position: absolute;
+  top: 0.625rem;
+  right: 0.625rem;
+  background: linear-gradient(135deg,
+    #ffb380 0%,
+    #ffa366 50%,
+    #ffb380 100%
+  );
+  background-size: 200% 200%;
+  color: white;
+  padding: 0.35rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  box-shadow: 
+    0 3px 12px rgba(255, 140, 66, 0.25),
+    0 2px 6px rgba(255, 165, 102, 0.18);
+  z-index: 10;
+  pointer-events: none;
+  letter-spacing: 0.3px;
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+/* ==========================================
+   WATCHLIST PAGE
+   ========================================== */
+
+.watchlist-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@media (min-width: 769px) {
+  .watchlist-page {
+    margin-left: 280px;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .sidebar.collapsed ~ * .watchlist-page {
+    margin-left: 80px;
+  }
+}
+
+.watchlist-header {
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(24px) saturate(180%);
+  border-radius: 20px;
+  padding: 1rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.06),
+    0 4px 16px rgba(219, 39, 119, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.watchlist-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.watchlist-title-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.watchlist-icon {
+  color: #db2777;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 6px rgba(219, 39, 119, 0.25));
+  animation: heartPulse 2s ease-in-out infinite;
+}
+
+.watchlist-header h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #be185d 0%, #db2777 50%, #be185d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: -0.5px;
+  filter: drop-shadow(0 2px 6px rgba(219, 39, 119, 0.15));
+}
+
+.watchlist-subtitle {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 0.25rem 0 0 0;
+  font-weight: 500;
+}
+
+.watchlist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 0;
+}
+
+.watchlist-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(162, 185, 238, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.empty-heart-icon {
+  color: #e5e7eb;
+  margin-bottom: 1.5rem;
+  opacity: 0.7;
+}
+
+.watchlist-empty-state h2 {
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.watchlist-empty-state p {
+  font-size: 1rem;
+  color: #6b7280;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN - PAGE-SPECIFIC
+   ========================================== */
+
+@media (max-width: 820px) {
+  .welcome-features {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .welcome-section {
+    height: calc(100vh - 80px);
+    margin: 0;
+    padding: 1.5rem 1rem;
+    top: 80px;
+    left: 0;
+    right: 0;
+  }
+  
+  .welcome-content {
+    padding: 1.5rem 1rem;
+    margin: 0;
+    border-radius: 0;
+  }
+  
+  .welcome-content h1 {
+    font-size: 2.25rem;
+    letter-spacing: -1.2px;
+  }
+  
+  .welcome-features {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .feature {
+    min-height: 90px;
+    padding: 1rem 0.875rem;
+  }
+
+  .best-deals-page {
+    padding: 0;
+  }
+
+  .best-deals-header {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 20px;
+  }
+
+  .best-deals-header .fire-emoji {
+    font-size: 2.25rem;
+  }
+
+  .best-deals-header h1 {
+    font-size: 1.85rem;
+  }
+
+  .best-deals-header .header-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .best-deals-header .header-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .refresh-button {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .deals-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .deal-badge {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.65rem;
+  }
+  
+  .watchlist-page {
+    padding: 0;
+  }
+
+  .watchlist-header {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border-radius: 20px;
+  }
+
+  .watchlist-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .watchlist-header h1 {
+    font-size: 1.85rem;
+  }
+
+  .watchlist-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .watchlist-header-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .watchlist-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-section {
+    margin: 0;
+    padding: 1rem;
+  }
+  
+  .welcome-content {
+    padding: 1.5rem 1rem;
+  }
+  
+  .welcome-content h1 {
+    font-size: 2rem;
+    letter-spacing: -1px;
+  }
+  
+  .welcome-content p {
+    font-size: 0.95rem;
+    margin-bottom: 2rem;
+  }
+  
+  .get-started-button {
+    padding: 0.75rem 2rem;
+    font-size: 0.85rem;
+  }
+  
+  .feature .feature-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .feature {
+    min-height: 85px;
+    padding: 0.875rem 0.75rem;
+  }
+  
+  .welcome-features {
+    margin-bottom: 1.5rem;
+  }
+}
+
