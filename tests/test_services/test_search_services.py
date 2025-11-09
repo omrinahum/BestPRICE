@@ -148,7 +148,7 @@ async def test_perform_search_cache_miss():
     service.search_all_sources.assert_awaited_once_with("phone")
     service.transform_service.assert_called_once_with(fake_raw)
     repo.update_or_create_offer_with_history.assert_awaited_once()
-    repo.create_search.assert_awaited_once_with(search_data, session)
+    repo.create_search.assert_awaited_once_with(search_data, session, None)
 
 @pytest.mark.asyncio
 async def test_get_recent_searches_found():

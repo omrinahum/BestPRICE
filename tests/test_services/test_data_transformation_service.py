@@ -58,3 +58,38 @@ def test_transform_search_results_handles_bad_items(monkeypatch):
         {"src": "dummyjson", "id": 1},
         {"src": "dummyjson", "id": 2},
     ]
+
+
+def test_transform_search_results_amazon(monkeypatch):
+    """
+    transform_search_results: handles amazon results
+    """
+    raw = {
+        'ebay': [],
+        'dummyjson': {'items_filtered': []},
+        'amazon': {
+            'products': [
+                {'asin': 'B123', 'title': 'Amazon Product'}
+            ]
+        }
+    }
+    
+    monkeypatch.setattr("backend.services.data_transformation_service.amazon_to_offer",
+                        lambda item: {"src": "amazon", "asin": item["asin"]})
+    
+    result = transform_search_results(raw)
+    assert len(result) == 1
+    assert result[0]["src"] == "amazon"
+
+
+def test_transform_search_results_empty_sources():
+    """
+    transform_search_results: handles all empty sources
+    """
+    raw = {
+        'ebay': [],
+        'dummyjson': {'items_filtered': []},
+        'amazon': {'products': []}
+    }
+    result = transform_search_results(raw)
+    assert result == []
