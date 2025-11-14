@@ -102,7 +102,7 @@ jobs:
           # Push the image to GitHub Container Registry
           docker push ghcr.io/omrinahum/bestprice:latest
 
-  # trigger render deployment hook to get the immage
+  # trigger render deployment hook to get the image
   trigger-render-deploy:
     # Run only after the image is successfully built and pushed
     needs: [build-and-push-docker]
