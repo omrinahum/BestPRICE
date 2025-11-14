@@ -50,4 +50,5 @@ COPY --from=builder /app/frontend/dist ./frontend/dist
 EXPOSE 8000
 
 # command to run the servicer
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# shell form -use the $PORT variable from render
+CMD uvicorn backend.main:app --host 0.0.0.0 --port $PORT
