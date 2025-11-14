@@ -62,7 +62,9 @@ app.include_router(auth_router.router, prefix="/auth", tags=["authentication"])
 app.include_router(user_router.router, prefix="/user", tags=["user"])
 app.include_router(deals_router.router, prefix="/deals", tags=["deals"])
 
-app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
+# Mount static files only if the directory exists
+if os.path.exists("frontend/dist/assets"):
+    app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
 
 # Catches everything
 @app.get("/{full_path:path}")
