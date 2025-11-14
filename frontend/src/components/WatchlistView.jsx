@@ -19,7 +19,7 @@ const WatchlistView = () => {
   const fetchWatchlist = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:8000/user/watchlist', {
+      const response = await fetch('/user/watchlist', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',

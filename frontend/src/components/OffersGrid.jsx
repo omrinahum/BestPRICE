@@ -40,7 +40,7 @@ const OffersGrid = ({ offers, loading, pagination, onOfferClick, onFiltersChange
       watchlistFetched.current = true
       
       try {
-        const response = await axios.get('http://localhost:8000/user/watchlist', {
+        const response = await axios.get('/user/watchlist', {
           headers: { Authorization: `Bearer ${token}` }
         })
         setUserWatchlist(response.data)

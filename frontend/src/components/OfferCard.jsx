@@ -40,7 +40,7 @@ const OfferCard = ({ offer, onClick, userWatchlist, onWatchlistUpdate }) => {
     try {
       if (isInWatchlist) {
         // Remove from watchlist
-        await axios.delete(`http://localhost:8000/user/watchlist/${offer.id}`, {
+        await axios.delete(`/user/watchlist/${offer.id}`, {
           headers: { Authorization: `Bearer ${token}` }
         })
         setIsInWatchlist(false)
@@ -50,7 +50,7 @@ const OfferCard = ({ offer, onClick, userWatchlist, onWatchlistUpdate }) => {
         }
       } else {
         // Add to watchlist
-        const response = await axios.post('http://localhost:8000/user/watchlist', {
+        const response = await axios.post('/user/watchlist', {
           offer_id: offer.id,
           product_title: offer.title,
           product_url: offer.url

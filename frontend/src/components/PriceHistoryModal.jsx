@@ -10,7 +10,7 @@ const PriceHistoryModal = ({ offer, onClose }) => {
   useEffect(() => {
     const fetchPriceHistory = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/offers/price/${offer.id}`)
+        const response = await fetch(`/offers/price/${offer.id}`)
         
         if (!response.ok) {
           throw new Error('Failed to fetch price history')

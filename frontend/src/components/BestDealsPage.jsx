@@ -23,7 +23,7 @@ const BestDealsPage = () => {
     setError(null)
     
     try {
-      const response = await fetch('http://localhost:8000/deals/recent')
+      const response = await fetch('/deals/recent')
       
       if (!response.ok) {
         throw new Error('Failed to fetch deals')
@@ -53,7 +53,7 @@ const BestDealsPage = () => {
     watchlistFetched.current = true
     
     try {
-      const response = await axios.get('http://localhost:8000/user/watchlist', {
+      const response = await axios.get('/user/watchlist', {
         headers: { Authorization: `Bearer ${token}` }
       })
       setUserWatchlist(response.data)

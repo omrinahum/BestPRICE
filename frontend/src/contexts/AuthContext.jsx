@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
       if (storedToken) {
         try {
           // Verify token is still valid by making a request to a protected endpoint
-          const response = await axios.get('http://localhost:8000/auth/me', {
+          const response = await axios.get('/auth/me', {
             headers: { Authorization: `Bearer ${storedToken}` }
           })
           setUser(response.data)
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const response = await axios.post('http://localhost:8000/auth/login', {
+      const response = await axios.post('/auth/login', {
         username,
         password
       })
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
       setToken(access_token)
       
       // Get user data after successful login
-      const userResponse = await axios.get('http://localhost:8000/auth/me', {
+      const userResponse = await axios.get('/auth/me', {
         headers: { Authorization: `Bearer ${access_token}` }
       })
       setUser(userResponse.data)
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (username, email, password, fullName) => {
     try {
-      const response = await axios.post('http://localhost:8000/auth/register', {
+      const response = await axios.post('/auth/register', {
         username,
         email,
         password,

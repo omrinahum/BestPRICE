@@ -44,7 +44,7 @@ function App() {
       console.log('Sending search request:', searchData)
       
       const token = localStorage.getItem('token')
-      const response = await fetch('http://localhost:8000/search/', {
+      const response = await fetch('/search/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ function App() {
       if (filters.source) params.append('source', filters.source)
       if (filters.min_rating) params.append('min_rating', filters.min_rating)
       
-      const url = `http://localhost:8000/offers/?${params}`
+      const url = `/offers/?${params}`
       console.log('Fetching offers from:', url)
       
       const token = localStorage.getItem('token')
