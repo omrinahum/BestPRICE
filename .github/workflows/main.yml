@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: '3.13' 
 
-      # third: to instal requirments
+      # third:  install dependencies
       - name: Install Python Dependencies
         run: pip install -r requirements.txt
 
@@ -37,13 +37,20 @@ jobs:
         run: |
           chmod +x scripts/run_tests.sh
           bash scripts/run_tests.sh
+      
+      # get the html report
+      - name: Upload coverage report
+        run: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-report
+          path: htmlcov/
 
   # second job : test the frontend
   test-frontend:
     runs-on: ubuntu-latest
 
     steps:
-     
+      # get code
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -67,7 +74,7 @@ jobs:
     needs: [test-backend, test-frontend] 
 
     runs-on: ubuntu-latest
-    
+    # if we passed al the test - trigger the render deplotment hook
     steps:
       - name: Trigger Render Deploy
         run: curl "${{ secrets.RENDER_DEPLOY_HOOK }}"

@@ -5,4 +5,5 @@ cd "$(dirname "$0")/.."
 
 export DATABASE_URL="sqlite:///./test.db"
 export ASYNC_DATABASE_URL="sqlite+aiosqlite:///./test.db"
-pytest --maxfail=1 --disable-warnings --tb=short
+#  run the test and create html report file
+pytest --cov=backend --cov-report=html:htmlcov --maxfail=1 --disable-warnings --tb=short
