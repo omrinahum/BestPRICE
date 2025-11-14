@@ -3,6 +3,9 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from backend.routers import search_router, offer_router, auth_router, user_router, deals_router
 from backend.utils.error import ValidationError, NotFoundError, ExternalAPIError
@@ -59,3 +62,12 @@ app.include_router(auth_router.router, prefix="/auth", tags=["authentication"])
 app.include_router(user_router.router, prefix="/user", tags=["user"])
 app.include_router(deals_router.router, prefix="/deals", tags=["deals"])
 
+app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets")
+
+# Catches everything
+@app.get("/{full_path:path}")
+async def serve_react_app(full_path: str):
+    file_path = "frontend/dist/index.html"
+    if not os.path.exists(file_path):
+        return JSONResponse(status_code=404, content={"detail": "Frontend index.html not found!"})
+    return FileResponse(file_path)

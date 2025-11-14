@@ -1,0 +1,79 @@
+# .github/workflows/main.yml
+
+# Name of the Workflow
+name: BestPrice CI/CD Pipeline
+
+# trigger : when to run - on each push or pr
+on:
+  push:
+    branches: [ main ] 
+  # run on each PR
+  pull_request:
+    
+
+
+# jobs: what to run
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest # just saying it linux
+
+    steps:
+     # first step: get the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # second step : install and setup python
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10 
+
+      # third: to instal requirments
+      - name: Install Python Dependencies
+        run: pip install -r requirements.txt
+
+      # run the tests script
+      - name: Run Backend Tests
+        run: |
+          chmod +x scripts/run_tests.sh
+          bash scripts/run_tests.sh
+
+  # second job : test the frontend
+  test-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+     
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # install node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # install the dependencies with npm
+      - name: Install Frontend Dependencies
+        run: npm install --prefix frontend
+
+      # running linter which checks for code level
+      - name: Run Linter
+        run: npm run lint --prefix frontend
+
+      # try to build the project to see it works
+      - name: Build Frontend
+        run: npm run build --prefix frontend
+
+    deploy:
+    # only if we passed the test, and its a merge into the main
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [test-backend, test-frontend] 
+
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Trigger Render Deploy
+        run: curl "${{ secrets.RENDER_DEPLOY_HOOK }}"
+
+      

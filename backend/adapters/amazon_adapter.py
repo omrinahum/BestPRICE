@@ -1,11 +1,12 @@
 import logging
+import os
 from typing import Dict, Any, Optional
 import httpx
 from backend.utils.price import to_decimal, normalize_currency
 from backend.utils.error import ExternalAPIError
 
 AMAZON_BASE_URL = "https://real-time-amazon-data.p.rapidapi.com/search"
-AMAZON_API_KEY = "66733af2d8mshd8f6d70ff0d8fcdp159ad1jsn6ab87a5238fc"
+AMAZON_API_KEY = os.getenv("AMAZON_API_KEY")
 AMAZON_API_HOST = "real-time-amazon-data.p.rapidapi.com"
 
 
