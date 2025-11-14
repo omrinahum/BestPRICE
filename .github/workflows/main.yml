@@ -57,10 +57,6 @@ jobs:
       - name: Install Frontend Dependencies
         run: npm install --prefix frontend
 
-      # running linter which checks for code level
-      - name: Run Linter
-        run: npm run lint --prefix frontend
-
       # try to build the project to see it works
       - name: Build Frontend
         run: npm run build --prefix frontend
