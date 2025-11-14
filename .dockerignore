@@ -1,0 +1,30 @@
+# .dockerignore
+
+# Python cache and virtual environments
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Node.js dependencies (we install these inside the container)
+node_modules/
+frontend/node_modules/
+
+# Build artifacts (we generate these inside the container)
+frontend/dist/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Git files
+.git/
+.gitignore
+
+# IDE files
+.vscode/
+.cursorrules
+
+# Test database
+bestprice.db
+test.db
