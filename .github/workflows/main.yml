@@ -65,7 +65,7 @@ jobs:
       - name: Build Frontend
         run: npm run build --prefix frontend
 
-    deploy:
+  deploy:
     # only if we passed the test, and its a merge into the main
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [test-backend, test-frontend] 
